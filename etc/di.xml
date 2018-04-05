@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- start: Payment Method Facade configuration -->
+    <type name="SR\Cardcom\Model\CardcomFacade">
+        <arguments>
+            <argument name="code" xsi:type="const">SR\Cardcom\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">SR\Cardcom\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">SR\Cardcom\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">CardcomValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">CardcomValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">CardcomCommandPool</argument>
+        </arguments>
+    </type>
+    <!-- end: Payment Method Facade configuration -->
+
+
+    <!-- start: Value handlers infrastructure -->
+    <virtualType name="CardcomValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">CardcomConfigValueHandler</item>
+                <item name="can_void" xsi:type="string">SR\Cardcom\Gateway\Config\CanVoidHandler</item>
+                <item name="can_cancel" xsi:type="string">SR\Cardcom\Gateway\Config\CanVoidHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CardcomConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">SR\Cardcom\Gateway\Config\Config</argument>
+        </arguments>
+    </virtualType>
+    <!-- end: Value handlers infrastructure -->
+
+
+    <!-- start: Validators infrastructure -->
+    <virtualType name="CardcomValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">CardcomCountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CardcomCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">SR\Cardcom\Gateway\Config\Config</argument>
+        </arguments>
+    </virtualType>
+    <!-- end: Validators infrastructure -->
+
+
+    <!-- start: Commands infrastructure -->
+    <virtualType name="CardcomCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="initialize_iframe" xsi:type="string">CardcomInitializeIframeCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- end: Commands infrastructure -->
+
+
+    <!-- start: Command: INITIALIZE IFRAME -->
+    <virtualType name="CardcomInitializeIframeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">CardcomInitializeIframeRequest</argument>
+            <argument name="transferFactory" xsi:type="object">SR\Cardcom\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">SR\Cardcom\Gateway\Http\Client\Curl</argument>
+            <argument name="validator" xsi:type="object">SR\Cardcom\Gateway\Validator\InitializeIframeResponseValidator</argument>
+            <argument name="handler" xsi:type="object">CardcomInitializeIframeHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="CardcomAuthorizeRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="iframe" xsi:type="string">SR\Cardcom\Gateway\Request\IframeDataBuilder</item>
+                <item name="operation" xsi:type="string">\SR\Cardcom\Gateway\Request\OperationDataBuilder</item>
+                <item name="store" xsi:type="string">SR\Cardcom\Gateway\Request\StoreConfigBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="CardcomInitializeIframeHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="txn_id" xsi:type="string">SR\Cardcom\Gateway\Response\TransactionIdHandler</item>
+                <item name="iframe_source_url" xsi:type="string">SR\Cardcom\Gateway\Response\IframeSourceUrlHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- end: Command: INITIALIZE IFRAME -->
+
+
+    <!-- start: Configuration reader -->
+    <type name="SR\Cardcom\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">SR\Cardcom\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </type>
+    <!-- end: Configuration reader -->
+</config>
