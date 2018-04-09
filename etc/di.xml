@@ -71,7 +71,7 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="CardcomAuthorizeRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+    <virtualType name="CardcomInitializeIframeRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="iframe" xsi:type="string">SR\Cardcom\Gateway\Request\IframeDataBuilder</item>

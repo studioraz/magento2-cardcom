@@ -14,7 +14,7 @@ class InitializeIframeResponseValidator extends AbstractValidator
         $isValid = false;
         $errorMessages = [];
 
-        $rawResponse = isset($validationSubject['response']) ? $validationSubject['response'] : '';
+        $rawResponse = isset($validationSubject['response']['object']) ? $validationSubject['response']['object'] : '';
 
         if (strpos($rawResponse, ';') !== false) {
             //sample: 0;a2a49617-d4f0-4860-887f-04e54bb50f63;OK

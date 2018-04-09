@@ -2,6 +2,8 @@
 
 namespace SR\Cardcom\Gateway\Request;
 
+use Magento\Payment\Gateway\Data\OrderAdapterInterface;
+use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use SR\Cardcom\Gateway\Config\Config;
 
@@ -31,13 +33,14 @@ class OperationDataBuilder implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
-        $payment = $buildSubject['payment'];
+        /** @var PaymentDataObjectInterface $paymentDO */
+        $paymentDO = $buildSubject['payment'];
 
-        /** @var Quote $quote */
-        $quote = $payment->getQuote();
+        /** @var OrderAdapterInterface $order */
+        $order = $paymentDO->getOrder();
 
         return [
-            self::OPERATION => $this->config->getOperationId($quote->getStoreId()),
+            self::OPERATION => $this->config->getOperationId($order->getStoreId()),
         ];
     }
 }

@@ -21,6 +21,10 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::CODE => [
+                    'redirectUrl' => [],
+                    'customerCcTokenList' => [],
+                    'image' => '',
+                    'isTokenizationActive' => 0,
                 ],
             ],
         ];

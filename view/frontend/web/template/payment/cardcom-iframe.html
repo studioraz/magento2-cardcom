@@ -1,0 +1,63 @@
+<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title field choice">
+        <input type="radio"
+               name="payment[method]"
+               class="radio"
+               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()" />
+        <label data-bind="attr: {'for': getCode()}" class="label">
+            <!-- ko if: (hasImage())-->
+            <img data-bind="attr: {'src': getImageUrl()}" class="payment-icon sr-cardcom-payment-icon" alt="Credit Cards">
+            <!-- /ko -->
+            <span data-bind="text: getTitle()"></span>
+        </label>
+    </div>
+    <div class="payment-method-content">
+        <fieldset class="fieldset" data-bind='attr: {id: "payment_form_" + getCode()}'>
+            <div class="sr-cardcom-cards-container">
+                <!-- ko foreach: {data: getAvailableCards(), as: 'item'} -->
+                <div class="field">
+                    <input type="radio"
+                           name="cardcom_cc_token"
+                           class="radio sr-cardcom-card-option"
+                           data-bind="attr: {'id': 'cardcom_cc_token_' + item.tokenId}, value: item.tokenId, checked: item.isChecked" />
+                    <label class="label" data-bind="attr: {'for': 'cardcom_cc_token_' + item.tokenId}"><span data-bind="text: item.label"></span></label>
+                </div>
+                <!--/ko-->
+            </div>
+            <div id="sr-cardcom-payment-method-note" class="payment-method-note">
+                <p><!-- ko i18n: 'Cardcom payment form will be displayed below.' --><!-- /ko --></p>
+                <!-- ko if: (isTokenizationActive())-->
+                <div class="sr-chkbox-save-cc-container">
+                    <input  class="sr-chkbox-save-cc"
+                            id="sr-chkbox-save-cc"
+                            type="checkbox"
+                            name="cardcom_save_cc"
+                            value="1"
+                            checked>
+                    <label for="sr-chkbox-save-cc"><!-- ko i18n: 'Save new Credit Card for the future payments.' --><!-- /ko --></label>
+                </div>
+                <!--/ko-->
+            </div>
+        </fieldset>
+        <div id="sr-cardcom-actions-toolbar" class="actions-toolbar">
+            <div class="primary sr-btn-iframe">
+                <button class="action primary checkout"
+                        type="submit"
+                        data-bind="attr: {title: $t('Continue to Secure Payment')}, enable: (getCode() == isChecked()), click: showIframeElement, css: {disabled: !isPlaceOrderActionAllowed()}"
+                        disabled>
+                    <span data-bind="i18n: 'Continue to Secure Payment'"></span>
+                </button>
+            </div>
+            <div class="primary sr-btn-place-order" style="display:none;">
+                <button class="action primary checkout"
+                        type="submit"
+                        data-bind="attr: {title: $t('Place Order')}, enable: (getCode() == isChecked()), click: placeOrderWithCC, css: {disabled: !isPlaceOrderActionAllowed()}"
+                        disabled>
+                    <span data-bind="i18n: 'Place Order'"></span>
+                </button>
+            </div>
+        </div>
+        <div id="sr-cardcom-iframe-container" class="sr-cardcom-iframe-container" style="display:none;"></div>
+    </div>
+</div>
+
