@@ -1,0 +1,6 @@
+"cc_mask_last_4","Number",module,SR_Cardcom
+"cc_owner_id","Owner Id",module,SR_Cardcom
+"cc_owner_name","Owner Name",module,SR_Cardcom
+"cc_type","Type",module,SR_Cardcom
+"cc_exp_date","Expiration Date",module,SR_Cardcom
+"last_trans_id","Last Transaction ID",module,SR_Cardcom

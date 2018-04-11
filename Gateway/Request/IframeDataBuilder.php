@@ -48,15 +48,11 @@ class IframeDataBuilder implements BuilderInterface
         $order = $paymentDO->getOrder();
 
         return [
-            'api_endpoint' => 'https://secure.cardcom.co.il/BillGoldLowProfile.aspx',
-
             'ProductName' => 'Order Id: ' . $this->getUniqueId($order),
             'ReturnValue' => $this->getUniqueId($order),
 
 
             //@todo: move into separate Request Builders
-            'TerminalNumber' => $this->config->getTerminalNumber($order->getStoreId()),
-            'UserName' => $this->config->getApiUsername($order->getStoreId()),
             'CodePage' => '65001',
             'Language' => 'en',//he - Hebrew, en - English, ...
             'APILevel' => '10',// API Level need to be 10
@@ -65,8 +61,8 @@ class IframeDataBuilder implements BuilderInterface
             'CoinID' => $this->getCoinID($order),//"1" - NIS, "2" - USD
 
             'IndicatorUrl' => $this->getIndicatorUrl($order),
-            'SuccessRedirectUrl' => $this->urlBuilder->getUrl('softcardcom/checkout/paymentsuccess', ['_secure' => true,]),
-            'ErrorRedirectUrl' => $this->urlBuilder->getUrl('softcardcom/checkout/paymenterror', ['_secure' => true,])
+            'SuccessRedirectUrl' => $this->urlBuilder->getUrl('cardcom/checkout/paymentsuccess', ['_secure' => true,]),
+            'ErrorRedirectUrl' => $this->urlBuilder->getUrl('cardcom/checkout/paymenterror', ['_secure' => true,])
         ];
     }
 
@@ -110,7 +106,7 @@ class IframeDataBuilder implements BuilderInterface
      */
     private function getIndicatorUrl(OrderAdapterInterface $orderAdapter)
     {
-        $url = $this->urlBuilder->getUrl('softcardcom/checkout/paymentnotify', ['_secure' => true,]);
+        $url = $this->urlBuilder->getUrl('cardcom/checkout/paymentnotify', ['_secure' => true,]);
         $parameter = $this->getUniqueId($orderAdapter);
         return $url . (!empty($parameter) ? '?oid=' . $parameter : '');
     }

@@ -21,6 +21,11 @@ class Form extends AppAction
      */
     private $checkout;
 
+    /**
+     * Form constructor.
+     * @param Context $context
+     * @param CheckoutFactory $checkoutFactory
+     */
     public function __construct(
         Context $context,
         CheckoutFactory $checkoutFactory
@@ -30,6 +35,9 @@ class Form extends AppAction
         parent::__construct($context);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function execute()
     {
         if (!$this->getRequest()->isAjax()) {
@@ -62,6 +70,8 @@ class Form extends AppAction
     }
 
     /**
+     * Initializes Checkout Object
+     *
      * @return $this
      */
     private function initCheckout()

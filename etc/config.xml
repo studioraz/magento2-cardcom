@@ -19,6 +19,7 @@
                 <!--<can_cancel>1</can_cancel>-->
                 <!--<can_review_payment>1</can_review_payment>-->
                 <!--<can_deny_payment>1</can_deny_payment>-->
+                <can_fetch_transaction_information>1</can_fetch_transaction_information>
                 <!--<cctypes>AE,VI,MC,DI,JCB,CUP,DN,MI</cctypes>-->
 
                 <order_status>processing</order_status>
@@ -61,7 +62,7 @@
                 <language_code>ENG</language_code>
 
                 <privateInfoKeys>auth_number,card_id,status_code,status_text,error_code,error_text</privateInfoKeys>
-                <paymentInfoKeys>last_trans_id,cc_mask_last_4,cc_owner,cc_exp_date,cc_ss_issue,cc_type</paymentInfoKeys>
+                <paymentInfoKeys>cc_mask_last_4,cc_owner_id,cc_owner_name,cc_type,cc_exp_date,last_trans_id</paymentInfoKeys>
             </cardcom>
         </payment>
     </default>

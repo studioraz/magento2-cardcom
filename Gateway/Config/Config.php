@@ -66,4 +66,18 @@ class Config extends PaymentGatewayConfig
     {
         return $this->getValue(self::KEY_API_USERNAME, $storeId);
     }
+
+    /**
+     * Returns credit card string code by CC_Id
+     *
+     * @param mixed|null $creditCardId
+     * @return string
+     */
+    public function getCcTypeById($creditCardId = null)
+    {
+        $creditCardId = (int)$creditCardId;
+
+        $list = [0 => 'PL', 1 => 'MasterCard', 2 => 'Visa', 3 => 'Maestro', 5 => 'Isracard',];
+        return isset($list[$creditCardId]) ? $list[$creditCardId] : $list[0];
+    }
 }

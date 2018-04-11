@@ -7,6 +7,8 @@ use Magento\Framework\DataObject;
 use Magento\Checkout\Helper\Data as CheckoutHelper;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Checkout\Model\Type\Onepage as CheckoutTypeOnepage;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Payment\Gateway\Command\CommandException;
@@ -15,9 +17,11 @@ use Magento\Payment\Model\MethodInterface;
 use Magento\Quote\Api\CartManagementInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
+use Magento\Sales\Model\Order;
 use SR\Cardcom\Gateway\Config\Config;
 use SR\Cardcom\Gateway\Response\IframeSourceUrlHandler;
 use SR\Cardcom\Model\Ui\ConfigProvider;
+
 
 class Checkout
 {
@@ -157,6 +161,78 @@ class Checkout
     }
 
     /**
+     * @param string|null $transactionId
+     * @return Order|null
+     * @throws LocalizedException
+     * @throws CouldNotSaveException
+     */
+    public function placeOrder($transactionId = null)
+    {
+        // prepare Quote
+        $this->quote->setCheckoutMethod($this->getCheckoutMethod());
+
+        // prepare Shipping information
+        $shipping = $this->quote->getShippingAddress();
+
+        // prepare Billing information
+        $billing = $this->quote->getBillingAddress();
+
+        // start: prepare Payment information
+        /** @var CardcomFacade $methodInstance */
+        $methodInstance = $this->getMethodInstance();
+
+        /** @var Quote\Payment $payment */
+        $payment = $this->quote->getPayment();
+        $payment->setMethod(ConfigProvider::CODE);
+
+        // command to fetch and fill transaction information into Payment Object
+        $methodInstance->fetchTransactionInfo($payment, $transactionId);
+        // end: prepare Payment information
+
+        //save quote
+        $this->quote->collectTotals();
+        $this->quoteRepository->save($this->quote);
+
+        //create order
+        $orderId = $this->quoteManagement->placeOrder($this->quote->getId());
+
+        $this->checkoutSession
+            ->setLastQuoteId($this->quote->getId())
+            ->setLastSuccessQuoteId($this->quote->getId())
+            ->clearHelperData();
+
+
+        $order = null;
+        if ($orderId) {
+            /** @var Order $order */
+            $order = $this->checkoutSession->getLastRealOrder();
+
+            $this->placeOrderAfter($order);
+        }
+
+        return $order;
+    }
+
+    /**
+     * Actions which should be run after Order is placed
+     *
+     * @param Order $order
+     * @return $this
+     */
+    private function placeOrderAfter(Order $order)
+    {
+        // add order information to the session
+        $this->checkoutSession
+            ->setLastOrderId($order->getId())
+            //->setRedirectUrl($redirectUrl)
+            ->setLastRealOrderId($order->getIncrementId())
+            ->setLastOrderStatus($order->getStatus());
+
+
+        return $this;
+    }
+
+    /**
      * @return MethodInterface
      * @throws LocalizedException
      */
@@ -166,5 +242,25 @@ class Checkout
             $this->methodInstance = $this->paymentData->getMethodInstance($this->methodType);
         }
         return $this->methodInstance;
+    }
+
+    /**
+     * Returns checkout method
+     *
+     * @return string
+     */
+    private function getCheckoutMethod()
+    {
+        if ($this->customerSession->isLoggedIn()) {
+            return CheckoutTypeOnepage::METHOD_CUSTOMER;
+        }
+        if (!$this->quote->getCheckoutMethod()) {
+            if ($this->checkoutData->isAllowedGuestCheckout($this->quote)) {
+                $this->quote->setCheckoutMethod(CheckoutTypeOnepage::METHOD_GUEST);
+            } else {
+                $this->quote->setCheckoutMethod(CheckoutTypeOnepage::METHOD_REGISTER);
+            }
+        }
+        return $this->quote->getCheckoutMethod();
     }
 }

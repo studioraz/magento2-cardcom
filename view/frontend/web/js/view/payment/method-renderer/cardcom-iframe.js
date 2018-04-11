@@ -57,10 +57,10 @@ define([
 
             this.renewIframeElement();
 
-            clearTimeout(timerId);
-            var timerId = setTimeout(function() {
-                self.renewIframeElement();
-            }, 600000);
+            // clearTimeout(timerId);
+            // var timerId = setTimeout(function() {
+            //     self.renewIframeElement();
+            // }, 600000);
 
             return 'Please wait.... content is loading...';
         },
@@ -95,8 +95,8 @@ define([
             var attributes = $.extend({
                 "scrolling": "no",
                 "frameborder": "no",
-                "height": "600",
-                "width": "600"
+                "height": "1024",
+                "width": "1024"
             }, extraAttributes);
 
             var iframeElement = $('<iframe>').attr(attributes);
