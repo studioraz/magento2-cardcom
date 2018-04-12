@@ -1,0 +1,9 @@
+<?php
+/** @var \SR\Cardcom\Block\Iframe\PaymentStep $block */
+?>
+
+<?php if($iframeUrl = $block->getIframeSourceUrl()): ?>
+<div id="sr-cardcom-iframe-container" class="sr-cardcom-iframe-container" >
+    <iframe scrolling="no" frameborder="no" height="800" width="100%" src="<?= $iframeUrl ?>"></iframe>
+</div>
+<?php endif ?>

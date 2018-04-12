@@ -8,6 +8,7 @@ use Magento\Checkout\Helper\Data as CheckoutHelper;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Checkout\Model\Type\Onepage as CheckoutTypeOnepage;
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NotFoundException;
@@ -18,6 +19,8 @@ use Magento\Quote\Api\CartManagementInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Email\Sender\OrderSender;
+use Magento\Sales\Model\ResourceModel\Order as OrderResource;
 use SR\Cardcom\Gateway\Config\Config;
 use SR\Cardcom\Gateway\Response\IframeSourceUrlHandler;
 use SR\Cardcom\Model\Ui\ConfigProvider;
@@ -58,6 +61,16 @@ class Checkout
     protected $quoteManagement;
 
     /**
+     * @var OrderResource
+     */
+    protected $orderResource;
+
+    /**
+     * @var OrderSender
+     */
+    protected $orderSender;
+
+    /**
      * @var CartRepositoryInterface
      */
     protected $quoteRepository;
@@ -82,6 +95,7 @@ class Checkout
      */
     private $methodInstance;
 
+
     /**
      * Checkout constructor.
      * @param DataObjectHelper $dataObjectHelper
@@ -92,6 +106,8 @@ class Checkout
      * @param CartRepositoryInterface $quoteRepository
      * @param PaymentData $paymentData
      * @param Config $config
+     * @param OrderResource $orderResource
+     * @param OrderSender $orderSender
      * @throws \Exception
      */
     public function __construct(
@@ -102,7 +118,9 @@ class Checkout
         CartManagementInterface $quoteManagement,
         CartRepositoryInterface $quoteRepository,
         PaymentData $paymentData,
-        Config $config
+        Config $config,
+        OrderResource $orderResource,
+        OrderSender $orderSender
     ) {
         $this->dataObjectHelper = $dataObjectHelper;
         $this->checkoutData     = $checkoutData;
@@ -111,7 +129,9 @@ class Checkout
         $this->quoteManagement  = $quoteManagement;
         $this->quoteRepository  = $quoteRepository;
         $this->paymentData      = $paymentData;
-        $this->config = $config;
+        $this->config           = $config;
+        $this->orderResource    = $orderResource;
+        $this->orderSender      = $orderSender;
 
         $this->initQuote();
     }
@@ -196,12 +216,6 @@ class Checkout
         //create order
         $orderId = $this->quoteManagement->placeOrder($this->quote->getId());
 
-        $this->checkoutSession
-            ->setLastQuoteId($this->quote->getId())
-            ->setLastSuccessQuoteId($this->quote->getId())
-            ->clearHelperData();
-
-
         $order = null;
         if ($orderId) {
             /** @var Order $order */
@@ -218,16 +232,36 @@ class Checkout
      *
      * @param Order $order
      * @return $this
+     * @throws AlreadyExistsException
      */
     private function placeOrderAfter(Order $order)
     {
-        // add order information to the session
-        $this->checkoutSession
-            ->setLastOrderId($order->getId())
-            //->setRedirectUrl($redirectUrl)
-            ->setLastRealOrderId($order->getIncrementId())
-            ->setLastOrderStatus($order->getStatus());
+        // Notify customer about this order
+        if (!$order->getEmailSent()) {
+            $comment = 'Notified customer about order\'s payment';
 
+            $this->orderSender->send($order);
+            $order->addStatusHistoryComment($comment)
+                ->setIsCustomerNotified(true);
+        }
+
+        $this->orderResource->save($order);
+
+        $this->checkoutSession
+            ->setLastQuoteId($this->quote->getId())
+            ->setLastSuccessQuoteId($this->quote->getId())
+            ->clearHelperData()
+        ;
+
+        // Such params are defined here: \Magento\Quote\Model\QuoteManagement::placeOrder
+        // but somehow they don't exist on current step but they should be.
+        // so define them again
+        $this->checkoutSession->setLastOrderId($order->getId());
+        $this->checkoutSession->setLastRealOrderId($order->getIncrementId());
+        $this->checkoutSession->setLastOrderStatus($order->getStatus());
+
+        $this->quote->setIsActive(false);
+        $this->quoteRepository->save($this->quote);
 
         return $this;
     }

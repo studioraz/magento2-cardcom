@@ -1,0 +1,17 @@
+<?php
+/**
+ * @var \SR\Cardcom\Block\Iframe\Error $block
+ */
+
+$errorCode = $block->getErrorCode();
+$errorMessage = $block->getErrorMessage();
+?>
+<script>
+parent.window.location.replace('/checkout/cart/');
+</script>
+<p><b>Error:</b><br>
+<strong>Code:</strong> <?= $errorCode ?><br>
+<strong>Message:</strong> <?= $errorMessage ?><br><br>
+The Payment operation has been rejected.<br>
+The Page will be reloaded.
+

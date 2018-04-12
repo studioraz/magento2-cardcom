@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page layout="cardcom_iframe" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="cardcom_iframe_defaults"/>
+    <body>
+        <referenceContainer name="root">
+            <block class="SR\Cardcom\Block\Iframe\Success" name="cardcom.iframe.success" template="SR_Cardcom::iframe/success.phtml" cacheable="false"/>
+        </referenceContainer>
+    </body>
+</page>

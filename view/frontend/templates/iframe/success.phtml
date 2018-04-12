@@ -1,0 +1,16 @@
+<?php
+/**
+ * @var \SR\Cardcom\Block\Iframe\Success $block
+ */
+
+$errorCode = $block->getErrorCode();
+$errorMessage = $block->getErrorMessage();
+?>
+<script>
+parent.window.location.replace('/checkout/onepage/success/');
+</script>
+<p><b>Order:</b><br>
+<strong>Order Id:</strong> <?= $block->getLastRealOrderId() ?><br>
+<strong>Order Status:</strong> <?= $block->getLastOrderStatus() ?><br><br>
+The Order has been placed successfully.<br>
+You will be redirected to Checkout Success Page.

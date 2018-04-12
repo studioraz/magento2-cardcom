@@ -1,0 +1,29 @@
+<?php
+
+namespace SR\Cardcom\Controller\Checkout;
+
+use Magento\Framework\Controller\ResultFactory;
+use SR\Cardcom\Controller\CheckoutAbstract;
+
+class PaymentStep extends CheckoutAbstract
+{
+    /**
+     * @inheritdoc
+     */
+    public function execute()
+    {
+        $httpResult = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+
+        try {
+            $this->initCheckout();
+            $iframeSourceUrl = $this->checkout->getIframeSourceUrl();
+
+            $this->coreRegistry->register('cardcom_iframe_source_url', $iframeSourceUrl);
+        } catch (\Exception $e) {
+            $httpResult = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+            $httpResult->setPath('checkout/cart');
+        }
+
+        return $httpResult;
+    }
+}

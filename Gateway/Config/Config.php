@@ -23,6 +23,7 @@ class Config extends PaymentGatewayConfig
 //    const KEY_INVOICE_SUBJECT = 'invoice_subject';
 //    const KEY_INVOICE_COMMENTS = 'invoice_comments';
 //    const KEY_LANGUAGE_CODE = 'language_code';
+    const KEY_MODE = 'mode';
     const KEY_OPERATION = 'operation';
     const KEY_TERMINAL_NUMBER = 'terminal_number';
 //    const KEY_TERMINAL_NUMBER_TOKENIZATION = 'terminal_number_tokenization';
@@ -65,6 +66,17 @@ class Config extends PaymentGatewayConfig
     public function getApiUsername($storeId = null)
     {
         return $this->getValue(self::KEY_API_USERNAME, $storeId);
+    }
+
+    /**
+     * Returns payment Mode (iFrame | Redirect)
+     *
+     * @param int|null $storeId
+     * @return string
+     */
+    public function geMode($storeId = null)
+    {
+        return $this->getValue(self::KEY_MODE, $storeId);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace SR\Cardcom\Controller;
 
 use Magento\Framework\App\Action\Action as AppAction;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\Registry;
 use SR\Cardcom\Gateway\Request\LowProfileCodeDataBuilder;
 use SR\Cardcom\Model\Checkout;
 use SR\Cardcom\Model\CheckoutFactory;
@@ -16,6 +17,11 @@ abstract class CheckoutAbstract extends AppAction
     private $checkoutFactory;
 
     /**
+     * @var Registry
+     */
+    protected $coreRegistry;
+
+    /**
      * @var Checkout
      */
     protected $checkout;
@@ -26,15 +32,18 @@ abstract class CheckoutAbstract extends AppAction
     protected $transactionId;
 
     /**
-     * Form constructor.
+     * CheckoutAbstract constructor.
      * @param Context $context
      * @param CheckoutFactory $checkoutFactory
+     * @param Registry $coreRegistry
      */
     public function __construct(
         Context $context,
-        CheckoutFactory $checkoutFactory
+        CheckoutFactory $checkoutFactory,
+        Registry $coreRegistry
     ) {
         $this->checkoutFactory = $checkoutFactory;
+        $this->coreRegistry = $coreRegistry;
 
         parent::__construct($context);
     }

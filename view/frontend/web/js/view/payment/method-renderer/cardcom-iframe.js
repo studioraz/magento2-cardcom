@@ -18,8 +18,8 @@ define([
     };
 
     // start: interaction with iFrame
-    window.cardcom = {Iframe:{}};
-    window.cardcom.Iframe.handleResponse = function(response) {
+    window.Cardcom = {Iframe:{}};
+    window.Cardcom.Iframe.handleResponse = function(response) {
         if (response.responseCode === 'cancel' || response.responseCode === 'error') {
             loadingProcess('show');
             window.location.reload(true);
@@ -46,6 +46,17 @@ define([
 
         defaults: {
             template: 'SR_Cardcom/payment/cardcom-iframe'
+        },
+
+        continuePayment: function(ui, event) {
+            //@todo: implement logic to choose payment mode (iframe/redirect/tokenization)
+
+            if (ccPaymentConfig.urls && ccPaymentConfig.urls.dedicatedPaymentStep) {
+                loadingProcess('show');
+                window.location.replace(ccPaymentConfig.urls.dedicatedPaymentStep);
+            }
+
+            return false;
         },
 
         showIframeElement: function(ui, event) {
@@ -95,8 +106,8 @@ define([
             var attributes = $.extend({
                 "scrolling": "no",
                 "frameborder": "no",
-                "height": "1024",
-                "width": "1024"
+                "height": "800",
+                "width": "600"
             }, extraAttributes);
 
             var iframeElement = $('<iframe>').attr(attributes);

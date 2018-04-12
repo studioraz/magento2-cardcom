@@ -43,7 +43,7 @@
             <div class="primary sr-btn-iframe">
                 <button class="action primary checkout"
                         type="submit"
-                        data-bind="attr: {title: $t('Continue to Secure Payment')}, enable: (getCode() == isChecked()), click: showIframeElement, css: {disabled: !isPlaceOrderActionAllowed()}"
+                        data-bind="attr: {title: $t('Continue to Secure Payment')}, enable: (getCode() == isChecked()), click: continuePayment, css: {disabled: !isPlaceOrderActionAllowed()}"
                         disabled>
                     <span data-bind="i18n: 'Continue to Secure Payment'"></span>
                 </button>
