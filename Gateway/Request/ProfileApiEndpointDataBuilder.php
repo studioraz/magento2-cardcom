@@ -2,15 +2,8 @@
 
 namespace SR\Cardcom\Gateway\Request;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
-
-class ProfileApiEndpointDataBuilder implements BuilderInterface
+class ProfileApiEndpointDataBuilder extends DataBuilderAbstract
 {
-    /**
-     *
-     */
-    const API_ENDPOINT = 'api_endpoint';
-
     /**
      * @inheritdoc
      */

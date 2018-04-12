@@ -53,13 +53,14 @@
                 <!-- end: Cardcom Tokenization settings -->
 
                 <!-- start: Cardcom Invoice settings -->
-                <!--<use_invoice_creation>0</use_invoice_creation>-->
+                <use_invoice_creation>0</use_invoice_creation>
+                <invoice_language_code>en</invoice_language_code>
                 <!--<invoice_shipping_item_code>00000</invoice_shipping_item_code>-->
                 <!-- end: Cardcom Invoice settings -->
 
                 <sort_order>1</sort_order>
                 <currency>ILS</currency>
-                <language_code>ENG</language_code>
+                <language_code>en</language_code>
 
                 <privateInfoKeys>auth_number,card_id,status_code,status_text,error_code,error_text</privateInfoKeys>
                 <paymentInfoKeys>cc_mask_last_4,cc_owner_id,cc_owner_name,cc_type,cc_exp_date,last_trans_id</paymentInfoKeys>

@@ -2,9 +2,7 @@
 
 namespace SR\Cardcom\Gateway\Request;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
-
-class StoreConfigBuilder implements BuilderInterface
+class StoreConfigBuilder extends DataBuilderAbstract
 {
     /**
      * @inheritdoc
