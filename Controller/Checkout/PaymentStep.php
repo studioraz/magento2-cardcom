@@ -20,6 +20,7 @@ class PaymentStep extends CheckoutAbstract
 
             $this->coreRegistry->register('cardcom_iframe_source_url', $iframeSourceUrl);
         } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
             $httpResult = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
             $httpResult->setPath('checkout/cart');
         }

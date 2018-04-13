@@ -4,30 +4,13 @@ namespace SR\Cardcom\Gateway\Request;
 
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use Magento\Payment\Gateway\Request\BuilderInterface;
-use SR\Cardcom\Gateway\Config\Config;
 
-class TerminalNumberDataBuilder implements BuilderInterface
+class TerminalNumberDataBuilder extends DataBuilderAbstract
 {
     /**
      *
      */
     const TERMINAL_NUMBER = 'TerminalNumber';
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * ProfileApiEndpointDataBuilder constructor.
-     * @param Config $config
-     */
-    public function __construct(
-        Config $config
-    ) {
-        $this->config = $config;
-    }
 
     /**
      * @inheritdoc

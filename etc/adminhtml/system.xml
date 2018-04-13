@@ -15,12 +15,6 @@
                     <label>Title</label>
                 </field>
 
-                <!-- default fields but is not needed at this stage -->
-                <!--<field id="payment_action" translate="label" type="select" sortOrder="250" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Payment Action</label>
-                    <source_model>Magento\SamplePaymentGateway\Model\Adminhtml\Source\PaymentAction</source_model>
-                </field>-->
-
                 <!-- start: Cardcom specific settings -->
                 <field id="api_username" type="text" translate="label comment" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API Username</label>
@@ -32,129 +26,20 @@
                     <comment>Terminal number as defined for the merchant at CG Gateway within the integration process.</comment>
                 </field>
 
-                <!-- is not needed at this stage -->
-                <!--<field id="debug" translate="label" type="select" sortOrder="650" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Debug</label>-->
-                    <!--<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>-->
-                <!--</field>-->
-
-                <!-- is not needed at this stage -->
-                <!--<field id="gateway_url" type="text" translate="label comment" sortOrder="660" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Gateway Url</label>-->
-                    <!--<comment><![CDATA[Format (sample): https://example.com/path/to/endpoint]]></comment>-->
-                <!--</field>-->
-
-                <!-- is not needed at this stage -->
-                <!--<field id="language_code" type="select" translate="label" sortOrder="670" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label><![CDATA[Payment GUI's language.]]></label>-->
-                    <!--<source_model>SR\Cardcom\Model\System\Config\Source\LanguageCode</source_model>-->
-                <!--</field>-->
-                <!-- end: Cardcom specific settings -->
-
-
-                <!-- is not needed at this stage -->
-                <!-- start: Cardcom Installments settings -->
-                <!--<field id="use_installments" translate="label comment" type="select" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Use Installments</label>-->
-                    <!--<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>-->
-                    <!--<comment>A regular payment that Customer makes, for example each month.</comment>-->
-                <!--</field>-->
-                <!--<field id="payments_interest" translate="label comment" type="text" sortOrder="740" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Payments Interest</label>-->
-                    <!--<comment>The option adds to the total amount a specific interest that can change for each value of number of payments that is chosen in the dropdown list.</comment>-->
-                    <!--<depends>-->
-                        <!--<field id="use_installments">1</field>-->
-                    <!--</depends>-->
-                <!--</field>-->
-                <!--<field id="installments_table" translate="label comment" sortOrder="750" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Table of Installments</label>-->
-                    <!--<frontend_model>SR\Cardcom\Block\Adminhtml\Form\Field\Installments</frontend_model>-->
-                    <!--<backend_model>SR\Cardcom\Model\System\Config\Backend\Installments</backend_model>-->
-                    <!--<comment>Table of Installments comment.</comment>-->
-                    <!--<depends>-->
-                        <!--<field id="use_installments">1</field>-->
-                    <!--</depends>-->
-                <!--</field>-->
-                <!-- end: Cardcom Installments settings -->
-
-
-                <!-- is not needed at this stage -->
-                <!-- start: Cardcom Tokenization settings -->
-                <!--<field id="use_cc_tokenization" translate="label comment" type="select" sortOrder="800" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Use Credit Card Tokenization</label>-->
-                    <!--<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>-->
-                    <!--<comment>CC Tokenization concept is basically providing the merchant with a card token (which is not the credit card number) the merchant can store and use for future transactions to Cardcom’s gateway instead of sending the real full credit card number.</comment>-->
-                <!--</field>-->
-                <!--<field id="api_username_tokenization" type="text" translate="label comment" sortOrder="820" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label><![CDATA[API Username<br><small>(for token [recharging, refunding, etc.])</small>]]></label>-->
-                    <!--<comment>Cardcom API username</comment>-->
-                    <!--<depends>-->
-                        <!--<field id="use_cc_tokenization">1</field>-->
-                    <!--</depends>-->
-                <!--</field>-->
-                <!--<field id="api_password_tokenization" type="text" translate="label comment" sortOrder="840" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label><![CDATA[API Password<br><small>(for token [recharging, refunding, etc.])</small>]]></label>-->
-                    <!--<comment>Cardcom API password</comment>-->
-                    <!--<depends>-->
-                        <!--<field id="use_cc_tokenization">1</field>-->
-                    <!--</depends>-->
-                <!--</field>-->
-                <!--<field id="terminal_number_tokenization" type="text" translate="label comment" sortOrder="860" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label><![CDATA[Terminal Number<br><small>(for token [recharging, refunding, etc.])</small>]]></label>-->
-                    <!--<comment>Terminal number as defined for the merchant at CG Gateway within the integration process.</comment>-->
-                    <!--<depends>-->
-                        <!--<field id="use_cc_tokenization">1</field>-->
-                    <!--</depends>-->
-                <!--</field>-->
-                <!-- end: Cardcom Tokenization settings -->
-
-
-                <!-- is not needed at this stage -->
                 <!-- start: Cardcom Invoice settings -->
-                <!--<field id="use_invoice_creation" translate="label comment" type="select" sortOrder="900" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Enable Automatic Invoice Creation</label>-->
-                    <!--<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>-->
-                    <!--<comment>A flag to disable/enable automatic invoice creation (on CG Paygate side).</comment>-->
-                <!--</field>-->
-                <!--<field id="invoice_subject" type="text" translate="label" sortOrder="910" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Invoice Subject</label>-->
-                    <!--<depends>-->
-                        <!--<field id="use_invoice_creation">1</field>-->
-                    <!--</depends>-->
-                <!--</field>-->
-                <!--<field id="invoice_comments" type="text" translate="label" sortOrder="920" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Invoice Comments</label>-->
-                    <!--<depends>-->
-                        <!--<field id="use_invoice_creation">1</field>-->
-                    <!--</depends>-->
-                <!--</field>-->
-                <!--<field id="invoice_shipping_item_description" type="text" translate="label comment" sortOrder="940" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Shipping Item SKU</label>-->
-                    <!--<comment>Shipping Description value will be used if current value is not defined.</comment>-->
-                    <!--<depends>-->
-                        <!--<field id="use_invoice_creation">1</field>-->
-                    <!--</depends>-->
-                <!--</field>-->
+                <field id="use_invoice_creation" translate="label comment" type="select" sortOrder="900" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Automatic Invoice Creation</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>A flag to disable/enable automatic invoice creation (on CC Paygate side).</comment>
+                </field>
+                <field id="invoice_language_code" type="select" translate="label" sortOrder="910" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label><![CDATA[Invoice GUI's language.]]></label>
+                    <source_model>SR\Cardcom\Model\System\Config\Source\LanguageCode</source_model>
+                    <depends>
+                        <field id="use_invoice_creation">1</field>
+                    </depends>
+                </field>
                 <!-- edit: Cardcom Invoice settings -->
-
-                <!-- is not needed at this stage -->
-                <!--<field id="allowspecific" translate="label" type="allowspecific" sortOrder="1500" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Payment From Applicable Countries</label>-->
-                    <!--<source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>-->
-                <!--</field>-->
-                <!--<field id="specificcountry" translate="label" type="multiselect" sortOrder="1510" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Payment From Specific Countries</label>-->
-                    <!--<source_model>Magento\Directory\Model\Config\Source\Country</source_model>-->
-                <!--</field>-->
-
-                <!-- is not needed at this stage -->
-                <!--<field id="image" translate="label comment" type="image" sortOrder="1600" showInDefault="1" showInWebsite="1" showInStore="0">-->
-                    <!--<label>Payment Icon Image</label>-->
-                    <!--<backend_model>Magento\Config\Model\Config\Backend\Image</backend_model>-->
-                    <!--<upload_dir config="system/filesystem/media" scope_info="1">Cardcom</upload_dir>-->
-                    <!--<base_url type="media" scope_info="1">Cardcom</base_url>-->
-                    <!--<comment><![CDATA[Allowed file types: jpg, jpeg, gif, png.]]></comment>-->
-                <!--</field>-->
 
                 <field id="sort_order" translate="label" type="text" sortOrder="2000" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Sort Order</label>

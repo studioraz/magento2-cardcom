@@ -11,27 +11,13 @@ class Config extends PaymentGatewayConfig
      * ex: 'payment/cardcom/{KEY_}'
      */
     const KEY_ACTIVE = 'active';
-//    const KEY_API_PASSWORD_TOKENIZATION = 'api_password_tokenization';
     const KEY_API_USERNAME = 'api_username';
-
-//    const KEY_API_USERNAME_TOKENIZATION = 'api_username_tokenization';
-//    const KEY_COUNTRY_CREDIT_CARD = 'specificcountry';
-//    const KEY_DEBUG = 'debug';
-//    const KEY_GATEWAY_URL = 'gateway_url';
-//    const KEY_IMAGE = 'image';
-//    const KEY_INSTALLMENTS_TABLE = 'installments_table';
-//    const KEY_INVOICE_SUBJECT = 'invoice_subject';
-//    const KEY_INVOICE_COMMENTS = 'invoice_comments';
-//    const KEY_LANGUAGE_CODE = 'language_code';
+    const KEY_LANGUAGE_CODE = 'language_code';
     const KEY_MODE = 'mode';
     const KEY_OPERATION = 'operation';
     const KEY_TERMINAL_NUMBER = 'terminal_number';
-//    const KEY_TERMINAL_NUMBER_TOKENIZATION = 'terminal_number_tokenization';
-//    const KEY_USE_INSTALLMENTS = 'use_installments';
-//    const KEY_USE_INVOICE_CREATION = 'use_invoice_creation';
-//    const KEY_USE_INVOICE_SHIPPING_ITEM_CODE = 'invoice_shipping_item_code';
-//    const KEY_USE_INVOICE_SHIPPING_ITEM_DESCRIPTION = 'invoice_shipping_item_description';
-//    const KEY_USE_CC_TOKENIZATION = 'use_cc_tokenization';
+    const KEY_USE_INVOICE_CREATION = 'use_invoice_creation';
+    const KEY_INVOICE_LANGUAGE_CODE = 'invoice_language_code';
 
 
 
@@ -77,6 +63,37 @@ class Config extends PaymentGatewayConfig
     public function geMode($storeId = null)
     {
         return $this->getValue(self::KEY_MODE, $storeId);
+    }
+
+    /**
+     * Returns Language which is used in Transactions.
+     *
+     * @param int|null $storeId
+     * @return mixed
+     */
+    public function getLanguageCode($storeId = null)
+    {
+        return $countryCardTypes = $this->getValue(self::KEY_LANGUAGE_CODE, $storeId);
+    }
+
+    /**
+     * @param int|null $storeId
+     * @return bool
+     */
+    public function isInvoiceCreationActive($storeId = null)
+    {
+        return (bool) $this->getValue(self::KEY_USE_INVOICE_CREATION, $storeId);
+    }
+
+    /**
+     * Returns Language which is used in CC Invoices.
+     *
+     * @param int|null $storeId
+     * @return mixed
+     */
+    public function getInvoiceLanguageCode($storeId = null)
+    {
+        return $countryCardTypes = $this->getValue(self::KEY_INVOICE_LANGUAGE_CODE, $storeId);
     }
 
     /**

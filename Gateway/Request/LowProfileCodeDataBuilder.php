@@ -2,9 +2,7 @@
 
 namespace SR\Cardcom\Gateway\Request;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
-
-class LowProfileCodeDataBuilder implements BuilderInterface
+class LowProfileCodeDataBuilder extends DataBuilderAbstract
 {
     /**
      *

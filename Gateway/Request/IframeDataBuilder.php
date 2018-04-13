@@ -3,20 +3,12 @@
 namespace SR\Cardcom\Gateway\Request;
 
 use Magento\Framework\UrlInterface;
-use Magento\Payment\Gateway\Data\Order\OrderAdapter;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use Magento\Payment\Gateway\Data\Quote\QuoteAdapter;
-use Magento\Payment\Gateway\Request\BuilderInterface;
 use SR\Cardcom\Gateway\Config\Config;
 
-class IframeDataBuilder implements BuilderInterface
+class IframeDataBuilder extends DataBuilderAbstract
 {
-    /**
-     * @var Config
-     */
-    private $config;
-
     /**
      * @var UrlInterface
      */
@@ -27,12 +19,10 @@ class IframeDataBuilder implements BuilderInterface
      * @param Config $config
      * @param UrlInterface $urlBuilder
      */
-    public function __construct(
-        Config $config,
-        UrlInterface $urlBuilder
-    ) {
-        $this->config = $config;
+    public function __construct(Config $config, UrlInterface $urlBuilder)
+    {
         $this->urlBuilder = $urlBuilder;
+        parent::__construct($config);
     }
 
     /**
@@ -64,38 +54,6 @@ class IframeDataBuilder implements BuilderInterface
             'SuccessRedirectUrl' => $this->urlBuilder->getUrl('cardcom/checkout/paymentsuccess', ['_secure' => true,]),
             'ErrorRedirectUrl' => $this->urlBuilder->getUrl('cardcom/checkout/paymenterror', ['_secure' => true,])
         ];
-    }
-
-    /**
-     * Returns Unique Id of quote/order
-     *
-     * @param OrderAdapterInterface $orderAdapter
-     * @return null|string
-     */
-    private function getUniqueId(OrderAdapterInterface $orderAdapter)
-    {
-        if ($orderAdapter instanceof QuoteAdapter) {
-            return $orderAdapter->getId() . '-' . rand(9999, 99999);
-        } elseif ($orderAdapter instanceof OrderAdapter) {
-            return $orderAdapter->getOrderIncrementId();
-        }
-        return null;
-    }
-
-    /**
-     * Returns value of CoinId param
-     *
-     * @param OrderAdapterInterface $orderAdapter
-     * @return string
-     */
-    private function getCoinID(OrderAdapterInterface $orderAdapter)
-    {
-        if (!$currencyCode = $orderAdapter->getCurrencyCode()) {
-            $currencyCode = 'NIS';
-        }
-
-        $coinId = ['NIS' => 1, 'ILS' => 1, 'USD' => 2, 'GBP' => 826, 'EUR' => 978, 'AUD' => 36];
-        return (string) (isset($coinId[$currencyCode]) ? $coinId[$currencyCode] : $coinId['NIS']);
     }
 
     /**
