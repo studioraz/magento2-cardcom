@@ -2,15 +2,26 @@
 
 namespace SR\Cardcom\Gateway\Response;
 
+use Magento\Framework\Url\EncoderInterface;
+use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Model\InfoInterface;
 use SR\Cardcom\Gateway\Config\Config;
 
-class IframeSourceUrlHandler implements HandlerInterface
+class IframeSourceUrlHandler extends HandlerAbstract
 {
     const KEY_IFRAME_SOURCE_URL = 'iframe_source_url';
+
+    /**
+     * @var UrlInterface
+     */
+    private $urlBuilder;
+
+    /**
+     * @var EncoderInterface
+     */
+    private $urlEncoder;
 
     /**
      * @var string
@@ -18,17 +29,19 @@ class IframeSourceUrlHandler implements HandlerInterface
     private $apiEndpointUrl = 'https://secure.cardcom.co.il/external/LowProfileClearing2.aspx';
 
     /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * StoreConfigBuilder constructor.
+     * IframeSourceUrlHandler constructor.
      * @param Config $config
+     * @param UrlInterface $urlBuilder
+     * @param EncoderInterface $urlEncoder
      */
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        Config $config,
+        UrlInterface $urlBuilder,
+        EncoderInterface $urlEncoder
+    ) {
+        $this->urlBuilder = $urlBuilder;
+        $this->urlEncoder = $urlEncoder;
+        parent::__construct($config);
     }
 
     /**
@@ -46,25 +59,15 @@ class IframeSourceUrlHandler implements HandlerInterface
         /** @var OrderAdapterInterface $order */
         $order = $paymentDO->getOrder();
 
-        $rawResponse = isset($response['object']) ? $response['object'] : '';
-
-        if (!is_array($rawResponse)) {
-            //sample: 0;a2a49617-d4f0-4860-887f-04e54bb50f63;OK
-            $explodedResponse = explode(';', $rawResponse);
-
-            $handledResult = [
-                'ResponseCode' => $explodedResponse[0],
-                'Description' => $explodedResponse[2],
-                'LowProfileCode' => $explodedResponse[1],
-            ];
-
-            $url = $this->apiEndpointUrl;
-            $url .= '?terminalnumber=' . $this->config->getTerminalNumber($order->getStoreId());
-            $url .= '&rspcode=';
-            $url .= '&lowprofilecode=' . $explodedResponse[1];
-
-            //@todo: add one more parameters into Additional Information
-            $payment->setAdditionalInformation(self::KEY_IFRAME_SOURCE_URL, $url);
+        if (!$handledResult = $this->parseResponse($response)) {
+            return;
         }
+
+        $url = $this->apiEndpointUrl;
+        $url .= '?terminalnumber=' . $this->config->getTerminalNumber($order->getStoreId());
+        $url .= '&rspcode=';
+        $url .= '&lowprofilecode=' . $handledResult['lowprofilecode'];
+
+        $payment->setAdditionalInformation(self::KEY_IFRAME_SOURCE_URL, $this->urlEncoder->encode($url));
     }
 }

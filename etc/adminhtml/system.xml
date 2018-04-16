@@ -15,6 +15,13 @@
                     <label>Title</label>
                 </field>
 
+
+                <field id="operation" type="select" translate="label" sortOrder="250" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Operation</label>
+                    <source_model>SR\Cardcom\Model\System\Config\Source\Operation</source_model>
+                    <comment>The operation the page needs to perform</comment>
+                </field>
+
                 <!-- start: Cardcom specific settings -->
                 <field id="api_username" type="text" translate="label comment" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API Username</label>
@@ -23,8 +30,17 @@
 
                 <field id="terminal_number" type="text" translate="label comment" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label><![CDATA[Terminal Number<br><small>(for regular charging with credit card)</small>]]></label>
-                    <comment>Terminal number as defined for the merchant at CG Gateway within the integration process.</comment>
+                    <comment>Terminal number as defined for the merchant at Cardcom Gateway within the integration process.</comment>
                 </field>
+
+                <field id="terminal_number_tokenization" type="text" translate="label comment" sortOrder="660" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label><![CDATA[Terminal Number<br><small>(for token [recharging, refunding, etc.])</small>]]></label>
+                    <comment>Terminal number as defined for the merchant at Cardcom Gateway within the integration process.</comment>
+                    <depends>
+                        <field id="operation" separator="|">2|3</field>
+                    </depends>
+                </field>
+                <!-- end: Cardcom specific settings -->
 
                 <!-- start: Cardcom Invoice settings -->
                 <field id="use_invoice_creation" translate="label comment" type="select" sortOrder="900" showInDefault="1" showInWebsite="1" showInStore="0">
