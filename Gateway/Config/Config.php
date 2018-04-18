@@ -13,6 +13,7 @@ class Config extends PaymentGatewayConfig
      */
     const KEY_ACTIVE = 'active';
     const KEY_API_USERNAME = 'api_username';
+    const KEY_API_PASSWORD = 'api_password';
     const KEY_LANGUAGE_CODE = 'language_code';
     const KEY_MODE = 'mode';
     const KEY_OPERATION = 'operation';
@@ -59,6 +60,17 @@ class Config extends PaymentGatewayConfig
     public function getApiUsername($storeId = null)
     {
         return $this->getValue(self::KEY_API_USERNAME, $storeId);
+    }
+
+    /**
+     * Returns API Password
+     *
+     * @param int|null $storeId
+     * @return string
+     */
+    public function getApiPassword($storeId = null)
+    {
+        return $this->getValue(self::KEY_API_PASSWORD, $storeId);
     }
 
     /**

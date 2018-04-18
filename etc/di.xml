@@ -56,6 +56,7 @@
                 <item name="initialize_iframe" xsi:type="string">CardcomInitializeIframeCommand</item>
                 <item name="fetch_transaction_information" xsi:type="string">CardcomFetchTransactionInfoCommand</item>
                 <item name="capture" xsi:type="string">CardcomCaptureCommand</item>
+                <item name="refund" xsi:type="string">CardcomRefundCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -139,6 +140,38 @@
     <!-- currently this is just a stub but can be implemented when it is needed -->
     <virtualType name="CardcomCaptureCommand" type="Magento\Payment\Gateway\Command\NullCommand"/>
     <!-- end: Command: CAPTURE -->
+
+
+    <!-- start: Command: REFUND -->
+    <virtualType name="CardcomRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">CardcomRefundRequest</argument>
+            <argument name="transferFactory" xsi:type="object">SR\Cardcom\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">SR\Cardcom\Gateway\Http\Client\Curl</argument>
+            <argument name="validator" xsi:type="object">SR\Cardcom\Gateway\Validator\RefundResponseValidator</argument>
+            <argument name="handler" xsi:type="object">CardcomRefundHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="CardcomRefundRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="api_endpoint" xsi:type="string">SR\Cardcom\Gateway\Request\ApiEndpointRefundDataBuilder</item>
+                <item name="terminal_number" xsi:type="string">SR\Cardcom\Gateway\Request\TerminalNumberDataBuilder</item>
+                <item name="user_name" xsi:type="string">SR\Cardcom\Gateway\Request\UserNameDataBuilder</item>
+                <item name="token" xsi:type="string">SR\Cardcom\Gateway\Request\TokenDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="CardcomRefundHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="invoice_refund" xsi:type="string">SR\Cardcom\Gateway\Response\InvoiceRefundHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- end: Command: REFUND -->
 
 
     <!-- start: Configuration reader -->

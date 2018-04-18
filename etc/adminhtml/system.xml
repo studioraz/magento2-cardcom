@@ -27,6 +27,10 @@
                     <label>API Username</label>
                     <comment>Cardcom API username</comment>
                 </field>
+                <field id="api_password" type="text" translate="label comment" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>API Password</label>
+                    <comment>Cardcom API password. (It is used in operations with Token.)</comment>
+                </field>
 
                 <field id="terminal_number" type="text" translate="label comment" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label><![CDATA[Terminal Number<br><small>(for regular charging with credit card)</small>]]></label>

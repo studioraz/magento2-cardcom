@@ -36,7 +36,8 @@
 
 
                 <!-- start: Cardcom specific settings -->
-                <api_username></api_username>
+                <api_username>kzFKfohEvL6AOF8aMEJz</api_username>
+                <api_password>FIDHIh4pAadw3Slbdsjg</api_password>
                 <terminal_number>1000</terminal_number>
                 <terminal_number_tokenization>1000</terminal_number_tokenization>
                 <operation>1</operation>
