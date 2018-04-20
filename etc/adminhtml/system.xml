@@ -61,6 +61,11 @@
                 </field>
                 <!-- edit: Cardcom Invoice settings -->
 
+                <field id="debug" translate="label comment" type="select" sortOrder="1900" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Debug</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Write debug data into log file. /var/log/cardcom.log]]></comment>
+                </field>
                 <field id="sort_order" translate="label" type="text" sortOrder="2000" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>

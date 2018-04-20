@@ -5,9 +5,34 @@ namespace SR\Cardcom\Gateway\Http\Client;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
+use Magento\Payment\Model\Method\Logger;
+use Psr\Log\LoggerInterface;
 
 class Curl implements ClientInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var Logger
+     */
+    protected $customLogger;
+
+    /**
+     * Curl constructor.
+     * @param LoggerInterface $logger
+     * @param Logger $customLogger
+     */
+    public function __construct(
+        LoggerInterface $logger,
+        Logger $customLogger
+    ) {
+        $this->logger = $logger;
+        $this->customLogger = $customLogger;
+    }
+
     /**
      * @inheritdoc
      */
@@ -15,8 +40,8 @@ class Curl implements ClientInterface
     {
         $data = $transferObject->getBody();
         $log = [
+            'client' => static::class,
             'request' => $data,
-            'client' => static::class
         ];
         $response['object'] = [];
 
@@ -49,11 +74,11 @@ class Curl implements ClientInterface
             $response['object'] = $result;
         } catch (\Exception $e) {
             $message = __($e->getMessage() ?: 'Sorry, but something went wrong');
-//            $this->logger->critical($message);
+            $this->logger->critical($message);
             throw new ClientException($message);
         } finally {
             $log['response'] = (array) $response['object'];
-//            $this->customLogger->debug($log);
+            $this->customLogger->debug($log);
         }
 
         return $response;
