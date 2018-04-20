@@ -7,12 +7,11 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Data\AddressAdapterInterface;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
-use Magento\Quote\Model\Quote\Address as QuoteShippingAddress;
+use Magento\Sales\Model\Order\Item as OrderItem;
 use SR\Cardcom\Gateway\Config\Config;
 
-class InvoiceDataBuilder extends DataBuilderAbstract
+abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
 {
     /**
      * Customer name on the invoice
@@ -173,6 +172,24 @@ class InvoiceDataBuilder extends DataBuilderAbstract
     }
 
     /**
+     * Checks if BUILDER can be used
+     *
+     * @param int|null $storeId
+     * @return mixed
+     */
+    abstract protected function canBuilderBePerformed($storeId);
+
+    /**
+     * Creates Extra Items Stub (ex: Shipping, Tax, Discount etc)
+     *
+     * such logic is a hook to correct calculation of Grand Total Amount (Order Validation)
+     *
+     * @param OrderAdapterInterface $orderAdapter
+     * @return DataObject|null
+     */
+    abstract protected function createExtraItems(OrderAdapterInterface $orderAdapter);
+
+    /**
      * @inheritdoc
      * @throws LocalizedException
      */
@@ -188,7 +205,7 @@ class InvoiceDataBuilder extends DataBuilderAbstract
         /** @var AddressAdapterInterface $billingAddress */
         $billingAddress = $order->getBillingAddress();
 
-        if (!$this->config->isInvoiceCreationActive($order->getStoreId())) {
+        if (!$this->canBuilderBePerformed($order->getStoreId())) {
             return [];
         }
 
@@ -225,19 +242,11 @@ class InvoiceDataBuilder extends DataBuilderAbstract
         $itemsSection = [];
         $itemIndex = 1;
 
-        $items = $order->getItems();
+        $items = array_merge($order->getItems(), $this->createExtraItems($order));
 
-        // start: add extra Items (Shipping and Tax)
-        // such logic is a hook to correct calculation of Grand Total Amount (Order Validation)
-        $firstItem = current($items);
-        if ($firstItem instanceof QuoteItem) {
-            $items[] = $this->getShippingItem($firstItem->getQuote());
-            $items[] = $this->getTaxItem($firstItem->getQuote());
-        }
-        // end: add extra Items (Shipping and Tax)
-
+        /** @var QuoteItem|OrderItem|DataObject $item */
         foreach ($items as $item) {
-            if ($item->getPrice() <= 0) {
+            if (!$this->canItemBeProcessed($item)) {
                 continue;
             }
 
@@ -247,6 +256,7 @@ class InvoiceDataBuilder extends DataBuilderAbstract
                 $key = $paramPrefix . $itemIndex . '.' . $paramName;
                 $itemsSection[$key] = $this->getItemValueByParamCode($item, $parameter);
             }
+
             $itemIndex++;
         }
 
@@ -254,48 +264,10 @@ class InvoiceDataBuilder extends DataBuilderAbstract
     }
 
     /**
-     * Returns Stub for Shipping Item
-     *
-     * @param Quote $quote
-     * @return DataObject
-     */
-    private function getShippingItem(Quote $quote)
-    {
-        /** @var QuoteShippingAddress $shipping */
-        $shipping = $quote->getShippingAddress();
-
-        return new DataObject([
-            'name' => 'Shipping: ' . $shipping->getShippingDescription(),
-            'price' => $shipping->getShippingAmount(),
-            'qty' => 1,
-            'sku' => '000000',
-        ]);
-    }
-
-    /**
-     * Returns Stub for Tax Item
-     *
-     * @param Quote $quote
-     * @return DataObject
-     */
-    private function getTaxItem(Quote $quote)
-    {
-        /** @var QuoteShippingAddress $shipping */
-        $shipping = $quote->getShippingAddress();
-
-        return new DataObject([
-            'name' => 'Tax',
-            'price' => $shipping->getTaxAmount(),
-            'qty' => 1,
-            'sku' => '001100',
-        ]);
-    }
-
-    /**
      * @param DataObject $item
      * @param string $paramCode
      * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     private function getItemValueByParamCode(DataObject $item, $paramCode)
     {
@@ -310,7 +282,7 @@ class InvoiceDataBuilder extends DataBuilderAbstract
                 break;
 
             case self::ITEM_QTY:
-                $value = (string) $item->getQty();
+                $value = (string) $this->getItemQuantity($item);
                 break;
 
             case self::ITEM_IS_VAT_INCLUDED:
@@ -330,5 +302,27 @@ class InvoiceDataBuilder extends DataBuilderAbstract
         }
 
         return $value;
+    }
+
+    /**
+     * Item Qty getter wrapper
+     *
+     * @param QuoteItem|OrderItem|DataObject $item
+     * @return int|float|string
+     */
+    protected function getItemQuantity($item)
+    {
+        return $item->getQty();
+    }
+
+    /**
+     * Checks if Item can be processed
+     *
+     * @param QuoteItem|OrderItem|DataObject $item
+     * @return bool
+     */
+    protected function canItemBeProcessed($item)
+    {
+        return (bool)(float)$item->getPrice();
     }
 }

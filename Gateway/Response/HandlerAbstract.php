@@ -51,6 +51,10 @@ abstract class HandlerAbstract implements HandlerInterface
         return $parsedResponse;
     }
 
+    /**
+     * @param InfoInterface $payment
+     * @param array $handledResult
+     */
     protected function defineGeneralOperationParams(InfoInterface $payment, array $handledResult)
     {
         $payment->setCcLast4($handledResult['ExtShvaParams_CardNumber5']);

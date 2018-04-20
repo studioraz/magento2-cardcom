@@ -82,7 +82,7 @@
                 <item name="user_name" xsi:type="string">SR\Cardcom\Gateway\Request\UserNameDataBuilder</item>
                 <item name="operation" xsi:type="string">\SR\Cardcom\Gateway\Request\OperationDataBuilder</item>
                 <item name="iframe" xsi:type="string">SR\Cardcom\Gateway\Request\IframeDataBuilder</item>
-                <item name="invoice" xsi:type="string">SR\Cardcom\Gateway\Request\InvoiceDataBuilder</item>
+                <item name="order_invoice" xsi:type="string">SR\Cardcom\Gateway\Request\OrderInvoiceDataBuilder</item>
                 <item name="tokenization_extra" xsi:type="string">SR\Cardcom\Gateway\Request\TokenizationExtraDataBuilder</item>
             </argument>
         </arguments>
@@ -160,6 +160,7 @@
                 <item name="terminal_number" xsi:type="string">SR\Cardcom\Gateway\Request\TerminalNumberDataBuilder</item>
                 <item name="user_name" xsi:type="string">SR\Cardcom\Gateway\Request\UserNameDataBuilder</item>
                 <item name="token" xsi:type="string">SR\Cardcom\Gateway\Request\TokenDataBuilder</item>
+                <item name="credit_memo" xsi:type="string">SR\Cardcom\Gateway\Request\CreditMemoDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
