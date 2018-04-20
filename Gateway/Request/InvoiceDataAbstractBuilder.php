@@ -7,6 +7,8 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Data\AddressAdapterInterface;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
+use Magento\Quote\Model\Quote\Item as QuoteItem;
+use Magento\Sales\Model\Order\Item as OrderItem;
 use SR\Cardcom\Gateway\Config\Config;
 
 abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
@@ -178,20 +180,14 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
     abstract protected function canBuilderBePerformed($storeId);
 
     /**
-     * Creates Shipping Item Stub
+     * Creates Extra Items Stub (ex: Shipping, Tax, Discount etc)
+     *
+     * such logic is a hook to correct calculation of Grand Total Amount (Order Validation)
      *
      * @param OrderAdapterInterface $orderAdapter
      * @return DataObject|null
      */
-    abstract protected function createShippingItem(OrderAdapterInterface $orderAdapter);
-
-    /**
-     * Creates Tax Item Stub
-     *
-     * @param OrderAdapterInterface $orderAdapter
-     * @return DataObject|null
-     */
-    abstract protected function createTaxItem(OrderAdapterInterface $orderAdapter);
+    abstract protected function createExtraItems(OrderAdapterInterface $orderAdapter);
 
     /**
      * @inheritdoc
@@ -246,23 +242,11 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
         $itemsSection = [];
         $itemIndex = 1;
 
-        $items = $order->getItems();
+        $items = array_merge($order->getItems(), $this->createExtraItems($order));
 
-        // start: add extra Items (Shipping and Tax)
-        // such logic is a hook to correct calculation of Grand Total Amount (Order Validation)
-        /** @var DataObject $shippingItem */
-        if ($shippingItem = $this->createShippingItem($order)) {
-            $items[] = $shippingItem;
-        }
-
-        /** @var DataObject $shippingItem */
-        if ($taxItem = $this->createTaxItem($order)) {
-            $items[] = $taxItem;
-        }
-        // end: add extra Items (Shipping and Tax)
-
+        /** @var QuoteItem|OrderItem|DataObject $item */
         foreach ($items as $item) {
-            if ($item->getPrice() <= 0) {
+            if (!$this->canItemBeProcessed($item)) {
                 continue;
             }
 
@@ -272,6 +256,7 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
                 $key = $paramPrefix . $itemIndex . '.' . $paramName;
                 $itemsSection[$key] = $this->getItemValueByParamCode($item, $parameter);
             }
+
             $itemIndex++;
         }
 
@@ -282,7 +267,7 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
      * @param DataObject $item
      * @param string $paramCode
      * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     private function getItemValueByParamCode(DataObject $item, $paramCode)
     {
@@ -297,7 +282,7 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
                 break;
 
             case self::ITEM_QTY:
-                $value = (string) $item->getQty();
+                $value = (string) $this->getItemQuantity($item);
                 break;
 
             case self::ITEM_IS_VAT_INCLUDED:
@@ -317,5 +302,27 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
         }
 
         return $value;
+    }
+
+    /**
+     * Item Qty getter wrapper
+     *
+     * @param QuoteItem|OrderItem|DataObject $item
+     * @return int|float|string
+     */
+    protected function getItemQuantity($item)
+    {
+        return $item->getQty();
+    }
+
+    /**
+     * Checks if Item can be processed
+     *
+     * @param QuoteItem|OrderItem|DataObject $item
+     * @return bool
+     */
+    protected function canItemBeProcessed($item)
+    {
+        return (bool)(float)$item->getPrice();
     }
 }

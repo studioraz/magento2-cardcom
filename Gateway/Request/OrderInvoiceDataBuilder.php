@@ -21,7 +21,7 @@ class OrderInvoiceDataBuilder extends InvoiceDataAbstractBuilder
     /**
      * @inheritdoc
      */
-    protected function createShippingItem(OrderAdapterInterface $orderAdapter)
+    protected function createExtraItems(OrderAdapterInterface $orderAdapter)
     {
         $items = $orderAdapter->getItems();
 
@@ -34,8 +34,22 @@ class OrderInvoiceDataBuilder extends InvoiceDataAbstractBuilder
         /** @var QuoteShippingAddress $shipping */
         $shipping = $quote->getShippingAddress();
 
+        return [
+            $this->createShippingItem($shipping),
+            $this->createTaxItem($shipping),
+        ];
+    }
+
+    /**
+     * Creates Shipping Item Stub
+     *
+     * @param QuoteShippingAddress $shipping
+     * @return DataObject
+     */
+    private function createShippingItem(QuoteShippingAddress $shipping)
+    {
         return new DataObject([
-            'name' => 'Shipping: ' . $shipping->getShippingDescription(),
+            'name' => __('Shipping: ' . $shipping->getShippingDescription()),
             'price' => $shipping->getShippingAmount(),
             'qty' => 1,
             'sku' => '000000',
@@ -43,23 +57,15 @@ class OrderInvoiceDataBuilder extends InvoiceDataAbstractBuilder
     }
 
     /**
-     * @inheritdoc
+     * Creates Tax Item Stub
+     *
+     * @param QuoteShippingAddress $shipping
+     * @return DataObject
      */
-    protected function createTaxItem(OrderAdapterInterface $orderAdapter)
+    private function createTaxItem(QuoteShippingAddress $shipping)
     {
-        $items = $orderAdapter->getItems();
-
-        /** @var QuoteItem $firstItem */
-        $firstItem = current($items);
-
-        /** @var Quote $order */
-        $quote = $firstItem->getQuote();
-
-        /** @var QuoteShippingAddress $shipping */
-        $shipping = $quote->getShippingAddress();
-
         return new DataObject([
-            'name' => 'Tax',
+            'name' => __('Tax'),
             'price' => $shipping->getTaxAmount(),
             'qty' => 1,
             'sku' => '001100',
