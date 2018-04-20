@@ -22,6 +22,8 @@ class InvoiceRefundHandler extends HandlerAbstract
             return;
         }
 
-        //@todo: implement logic when it is needed
+        $payment->setAdditionalInformation('invoice_refund_deal_number', $handledResult['InternalDealNumber']);
+        $payment->setAdditionalInformation('invoice_refund_number', $handledResult['InvoiceResponse_InvoiceNumber']);
+        $payment->setAdditionalInformation('invoice_refund_type', $handledResult['InvoiceResponse_InvoiceType']);
     }
 }

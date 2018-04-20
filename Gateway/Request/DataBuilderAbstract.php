@@ -57,7 +57,7 @@ abstract class DataBuilderAbstract implements BuilderInterface
         if ($orderAdapter instanceof QuoteAdapter) {
             return $orderAdapter->getId() . '-' . rand(9999, 99999);
         } elseif ($orderAdapter instanceof OrderAdapter) {
-            return $orderAdapter->getOrderIncrementId();
+            return $orderAdapter->getOrderIncrementId() . '-' . rand(9999, 99999);
         }
         return null;
     }

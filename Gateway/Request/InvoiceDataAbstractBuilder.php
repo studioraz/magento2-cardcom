@@ -7,12 +7,9 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Data\AddressAdapterInterface;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Item as QuoteItem;
-use Magento\Quote\Model\Quote\Address as QuoteShippingAddress;
 use SR\Cardcom\Gateway\Config\Config;
 
-class InvoiceDataBuilder extends DataBuilderAbstract
+abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
 {
     /**
      * Customer name on the invoice
@@ -173,6 +170,30 @@ class InvoiceDataBuilder extends DataBuilderAbstract
     }
 
     /**
+     * Checks if BUILDER can be used
+     *
+     * @param int|null $storeId
+     * @return mixed
+     */
+    abstract protected function canBuilderBePerformed($storeId);
+
+    /**
+     * Creates Shipping Item Stub
+     *
+     * @param OrderAdapterInterface $orderAdapter
+     * @return DataObject|null
+     */
+    abstract protected function createShippingItem(OrderAdapterInterface $orderAdapter);
+
+    /**
+     * Creates Tax Item Stub
+     *
+     * @param OrderAdapterInterface $orderAdapter
+     * @return DataObject|null
+     */
+    abstract protected function createTaxItem(OrderAdapterInterface $orderAdapter);
+
+    /**
      * @inheritdoc
      * @throws LocalizedException
      */
@@ -188,7 +209,7 @@ class InvoiceDataBuilder extends DataBuilderAbstract
         /** @var AddressAdapterInterface $billingAddress */
         $billingAddress = $order->getBillingAddress();
 
-        if (!$this->config->isInvoiceCreationActive($order->getStoreId())) {
+        if (!$this->canBuilderBePerformed($order->getStoreId())) {
             return [];
         }
 
@@ -229,10 +250,14 @@ class InvoiceDataBuilder extends DataBuilderAbstract
 
         // start: add extra Items (Shipping and Tax)
         // such logic is a hook to correct calculation of Grand Total Amount (Order Validation)
-        $firstItem = current($items);
-        if ($firstItem instanceof QuoteItem) {
-            $items[] = $this->getShippingItem($firstItem->getQuote());
-            $items[] = $this->getTaxItem($firstItem->getQuote());
+        /** @var DataObject $shippingItem */
+        if ($shippingItem = $this->createShippingItem($order)) {
+            $items[] = $shippingItem;
+        }
+
+        /** @var DataObject $shippingItem */
+        if ($taxItem = $this->createTaxItem($order)) {
+            $items[] = $taxItem;
         }
         // end: add extra Items (Shipping and Tax)
 
@@ -251,44 +276,6 @@ class InvoiceDataBuilder extends DataBuilderAbstract
         }
 
         return $itemsSection;
-    }
-
-    /**
-     * Returns Stub for Shipping Item
-     *
-     * @param Quote $quote
-     * @return DataObject
-     */
-    private function getShippingItem(Quote $quote)
-    {
-        /** @var QuoteShippingAddress $shipping */
-        $shipping = $quote->getShippingAddress();
-
-        return new DataObject([
-            'name' => 'Shipping: ' . $shipping->getShippingDescription(),
-            'price' => $shipping->getShippingAmount(),
-            'qty' => 1,
-            'sku' => '000000',
-        ]);
-    }
-
-    /**
-     * Returns Stub for Tax Item
-     *
-     * @param Quote $quote
-     * @return DataObject
-     */
-    private function getTaxItem(Quote $quote)
-    {
-        /** @var QuoteShippingAddress $shipping */
-        $shipping = $quote->getShippingAddress();
-
-        return new DataObject([
-            'name' => 'Tax',
-            'price' => $shipping->getTaxAmount(),
-            'qty' => 1,
-            'sku' => '001100',
-        ]);
     }
 
     /**
