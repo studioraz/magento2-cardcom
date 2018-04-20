@@ -21,10 +21,9 @@ class Curl implements ClientInterface
         $response['object'] = [];
 
         try {
-            //@todo: implement request sending using CURL
+            //@todo: implement request sending using CURL ADAPTERS
 
-
-            // start: TEMP solution. USE CURL ADAPTERS
+            // start: TEMP solution.USE CURL ADAPTERS
             $curl = curl_init();
 
             if (!isset($data['api_endpoint'])) {

@@ -3,7 +3,6 @@
 namespace SR\Cardcom\Model;
 
 use Magento\Framework\Api\DataObjectHelper;
-use Magento\Framework\DataObject;
 use Magento\Checkout\Helper\Data as CheckoutHelper;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -12,6 +11,7 @@ use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NotFoundException;
+use Magento\Framework\Url\DecoderInterface;
 use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Helper\Data as PaymentData;
 use Magento\Payment\Model\MethodInterface;
@@ -95,6 +95,10 @@ class Checkout
      */
     private $methodInstance;
 
+    /**
+     * @var DecoderInterface
+     */
+    private $urlDecoder;
 
     /**
      * Checkout constructor.
@@ -108,6 +112,7 @@ class Checkout
      * @param Config $config
      * @param OrderResource $orderResource
      * @param OrderSender $orderSender
+     * @param DecoderInterface $urlDecoder
      * @throws \Exception
      */
     public function __construct(
@@ -120,7 +125,8 @@ class Checkout
         PaymentData $paymentData,
         Config $config,
         OrderResource $orderResource,
-        OrderSender $orderSender
+        OrderSender $orderSender,
+        DecoderInterface $urlDecoder
     ) {
         $this->dataObjectHelper = $dataObjectHelper;
         $this->checkoutData     = $checkoutData;
@@ -132,6 +138,7 @@ class Checkout
         $this->config           = $config;
         $this->orderResource    = $orderResource;
         $this->orderSender      = $orderSender;
+        $this->urlDecoder       = $urlDecoder;
 
         $this->initQuote();
     }
@@ -177,7 +184,8 @@ class Checkout
 
         $this->quoteRepository->save($this->quote);
 
-        return $payment->getAdditionalInformation(IframeSourceUrlHandler::KEY_IFRAME_SOURCE_URL);
+        $url = $payment->getAdditionalInformation(IframeSourceUrlHandler::KEY_IFRAME_SOURCE_URL);
+        return $this->urlDecoder->decode($url);
     }
 
     /**
