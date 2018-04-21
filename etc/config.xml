@@ -34,7 +34,6 @@
                 <!-- end: General Settings -->
 
 
-
                 <!-- start: Cardcom specific settings -->
                 <api_username>kzFKfohEvL6AOF8aMEJz</api_username>
                 <api_password>FIDHIh4pAadw3Slbdsjg</api_password>
@@ -42,24 +41,12 @@
                 <terminal_number_tokenization>1000</terminal_number_tokenization>
                 <operation>1</operation>
                 <mode>1</mode>
-                <!--<debug>0</debug>-->
-                <!--<gateway_url></gateway_url>&lt;!&ndash; SANDBOX url by default &ndash;&gt;-->
+                <debug>0</debug>
                 <!-- end: Cardcom specific settings -->
-
-                <!--<use_installments>0</use_installments>-->
-                <!--<payments_interest>0 250 650</payments_interest>-->
-
-                <!-- start: Cardcom Tokenization settings -->
-                <!--<use_cc_tokenization>0</use_cc_tokenization>-->
-                <!--<api_username_tokenization></api_username_tokenization>-->
-                <!--<api_password_tokenization></api_password_tokenization>-->
-                <!--<terminal_number_tokenization></terminal_number_tokenization>-->
-                <!-- end: Cardcom Tokenization settings -->
 
                 <!-- start: Cardcom Invoice settings -->
                 <use_invoice_creation>0</use_invoice_creation>
                 <invoice_language_code>en</invoice_language_code>
-                <!--<invoice_shipping_item_code>00000</invoice_shipping_item_code>-->
                 <!-- end: Cardcom Invoice settings -->
 
                 <sort_order>1</sort_order>

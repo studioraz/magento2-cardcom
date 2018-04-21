@@ -189,4 +189,28 @@
             <argument name="config" xsi:type="object">SR\Cardcom\Gateway\Config\Config</argument>
         </arguments>
     </type>
+
+
+    <!-- start: Cardcom Logger, initialized with CardcomConfig -->
+    <type name="SR\Cardcom\Gateway\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">cardcom</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="debug_cardcom" xsi:type="object">SR\Cardcom\Gateway\Logger\Handler\Debug</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="CardcomLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="logger" xsi:type="object">SR\Cardcom\Gateway\Logger\Logger</argument>
+            <argument name="config" xsi:type="object">SR\Cardcom\Gateway\Config\Config</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="SR\Cardcom\Gateway\Http\Client\Curl">
+        <arguments>
+            <argument name="customLogger" xsi:type="object">CardcomLogger</argument>
+        </arguments>
+    </type>
+    <!-- end: Cardcom Logger, initialized with CardcomConfig -->
 </config>
