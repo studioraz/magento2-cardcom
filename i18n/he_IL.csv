@@ -1,28 +1,28 @@
-"cc_mask_last_4","Card Last 4 Digits"
-"cc_owner_id","Card Owner Id"
-"cc_owner_name","Card Owner Name"
-"cc_type","Card Type"
-"cc_exp_date","Card Expiration Date"
-"last_trans_id","Last Transaction ID"
+"cc_mask_last_4","מספר כרטיס אשראי"
+"cc_owner_id","תעודת זהות של בעל הכרטיס"
+"cc_owner_name","שם בעל הכרטיס"
+"cc_type","סוג הכרטיס"
+"cc_exp_date","תוקף הכרטיס"
+"last_trans_id","מספר עסקה"
 "Parameter is incorrect.","Parameter is incorrect."
-"We can't start Cardcom payment process.","We can't start Cardcom payment process."
-"Sorry, but something went wrong","Sorry, but something went wrong"
-"'Shipping: ' .","'Shipping: ' ."
-Tax,Tax
-"Adjustment Refund","Adjustment Refund"
-"Adjustment Fee","Adjustment Fee"
-English,English
-Hebrew,Hebrew
-"Billing (Charge Only)","Billing (Charge Only)"
-"Billing + Create a Token","Billing + Create a Token"
-"Cardcom payment form will be displayed below.","Cardcom payment form will be displayed below."
+"We can't start Cardcom payment process.","לא ניתן לבצע את העסקה."
+"Sorry, but something went wrong","מצטערים, ארעה תקלה"
+"'Shipping: ' .","'משלוח: ' ."
+Tax,מס
+"Adjustment Refund","התאמת זיכוי"
+"Adjustment Fee","עמלת זיכוי"
+English,אנגלית
+Hebrew,עברית
+"Billing (Charge Only)","חיוב בלבד"
+"Billing + Create a Token","חיוב + יצירת טוקן"
+"You will be redirected to a secured payment page when you place your order.","אתה תועבר לדף מאובטח להזנת פרטי האשראי לאחר לחיצה על כפתור 'המשך לתשלום מאובטח'"
 "Save new Credit Card for the future payments.","Save new Credit Card for the future payments."
-"Continue to Secure Payment","Continue to Secure Payment"
+"Continue to Secure Payment","המשך לתשלום מאובטח"
 "Place Order","Place Order"
-CardCom,CardCom
-Enabled,Enabled
-Title,Title
-Operation,Operation
+CardCom,קארדקום
+Enabled,פעיל
+Title,כותרת
+Operation,פעולה
 "API Username","API Username"
 "Cardcom API username","Cardcom API username"
 "API Password","API Password"
@@ -35,4 +35,4 @@ Operation,Operation
 "Invoice GUI's language.","Invoice GUI's language."
 Debug,Debug
 "Write debug data into log file. /var/log/cardcom.log","Write debug data into log file. /var/log/cardcom.log"
-"Sort Order","Sort Order"
+"Sort Order","מיקום"
