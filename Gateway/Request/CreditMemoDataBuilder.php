@@ -64,9 +64,26 @@ class CreditMemoDataBuilder extends InvoiceDataAbstractBuilder
      */
     private function createShippingItem(Order $order)
     {
+        // start: Calculate already refunded Shipping Amount (according to existing Creditmemos)
+        $amountRefundedTotal = 0;
+        $creditmemos = $order->getCreditmemosCollection();
+
+        /** @var Order\Creditmemo $creditmemoItem */
+        foreach ($creditmemos->getItems() as $creditmemoItem) {
+            $amountRefundedTotal += (float)$creditmemoItem->getShippingAmount();
+        }
+        // end: Calculate already refunded Shipping Amount
+
+        $amountToRefund = (float)$order->getShippingRefunded() - $amountRefundedTotal;
+
+        // Total of Refunded Shipping Amount should not be greater than Invoiced Shipping Amount
+        if ($amountToRefund >= (float)$order->getShippingInvoiced()) {
+            $amountToRefund = 0;
+        }
+
         return new DataObject([
             'name' => __('Shipping: ' . $order->getShippingDescription()),
-            'price' => $order->getShippingRefunded(),
+            'price' => $amountToRefund,
             'qty_refunded' => 1,
             'sku' => '000000',
         ]);
