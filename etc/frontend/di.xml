@@ -7,4 +7,11 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Magento\Checkout\Model\GuestPaymentInformationManagement">
+        <plugin name="cardcom_guest_paymentinformationmanager_wrapper" type="SR\Cardcom\Model\Checkout\PaymentInformationManagementPlugin" sortOrder="10" disabled="false"/>
+    </type>
+    <type name="Magento\Checkout\Model\PaymentInformationManagement">
+        <plugin name="cardcom_user_paymentinformationmanager_wrapper" type="SR\Cardcom\Model\Checkout\PaymentInformationManagementPlugin" sortOrder="10" disabled="false"/>
+    </type>
 </config>
