@@ -46,11 +46,10 @@
 
                 <!-- start: Cardcom Invoice settings -->
                 <use_invoice_creation>0</use_invoice_creation>
-                <invoice_language_code>en</invoice_language_code>
                 <!-- end: Cardcom Invoice settings -->
 
                 <sort_order>1</sort_order>
-                <currency>ILS</currency>
+                <currency>USD</currency>
                 <language_code>en</language_code>
 
                 <privateInfoKeys>auth_number,card_id,status_code,status_text,error_code,error_text</privateInfoKeys>

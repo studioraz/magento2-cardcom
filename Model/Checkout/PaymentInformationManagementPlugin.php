@@ -15,6 +15,8 @@ class PaymentInformationManagementPlugin
      * We need to proceed checkout flow with CUSTOM PAYMENT step
      * so we skip Order Placing process if CardomPaymentMethod is used
      *
+     * both Guest and User flows are handled
+     *
      * @origin GuestPaymentInformationManagementInterface::savePaymentInformationAndPlaceOrder
      * @origin PaymentInformationManagementInterface::savePaymentInformationAndPlaceOrder
      *

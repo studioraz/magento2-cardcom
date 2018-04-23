@@ -44,7 +44,6 @@ class IframeDataBuilder extends DataBuilderAbstract
 
             //@todo: move into separate Request Builders
             'CodePage' => '65001',
-            'Language' => 'he',//he - Hebrew, en - English, ...
             'APILevel' => '10',// API Level need to be 10
 
             'SumToBill' => number_format($amount, 2, '.', ''),// Grand Total

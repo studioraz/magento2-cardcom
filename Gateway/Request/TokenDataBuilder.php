@@ -202,7 +202,6 @@ class TokenDataBuilder extends DataBuilderAbstract
         return [
             //@todo: move into separate Request Builders
             'CodePage' => '65001',
-            'Language' => 'he',//he - Hebrew, en - English, ...
             'APILevel' => '10',// API Level need to be 10
 
             self::USER_PASSWORD => $this->config->getApiPassword($order->getStoreId()),

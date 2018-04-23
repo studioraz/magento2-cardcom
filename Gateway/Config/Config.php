@@ -2,7 +2,9 @@
 
 namespace SR\Cardcom\Gateway\Config;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Payment\Gateway\Config\Config as PaymentGatewayConfig;
+use Magento\Store\Model\ScopeInterface;
 use SR\Cardcom\Model\System\Config\Source\Operation;
 
 class Config extends PaymentGatewayConfig
@@ -22,7 +24,26 @@ class Config extends PaymentGatewayConfig
     const KEY_USE_INVOICE_CREATION = 'use_invoice_creation';
     const KEY_INVOICE_LANGUAGE_CODE = 'invoice_language_code';
 
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
 
+    /**
+     * Config constructor.
+     * @param ScopeConfigInterface $scopeConfig
+     * @param null $methodCode
+     * @param string $pathPattern
+     */
+    public function __construct(
+        ScopeConfigInterface $scopeConfig,
+        $methodCode = null,
+        $pathPattern = self::DEFAULT_PATH_PATTERN
+    ) {
+        parent::__construct($scopeConfig, $methodCode, $pathPattern);
+
+        $this->scopeConfig = $scopeConfig;
+    }
 
     /**
      * Returns payment operation ID.
@@ -87,12 +108,22 @@ class Config extends PaymentGatewayConfig
     /**
      * Returns Language which is used in Transactions.
      *
+     * he - Hebrew, en - English, ...
+     *
      * @param int|null $storeId
      * @return mixed
      */
     public function getLanguageCode($storeId = null)
     {
-        return $countryCardTypes = $this->getValue(self::KEY_LANGUAGE_CODE, $storeId);
+        $localeLanguageCode = $this->scopeConfig->getValue('general/locale/code', ScopeInterface::SCOPE_STORE, $storeId);
+        $list = ['en_US' => 'en', 'he_IL' => 'he', ];
+
+        $languageCode = $this->getValue(self::KEY_LANGUAGE_CODE, $storeId);
+        if (isset($list[$localeLanguageCode])) {
+            $languageCode = $list[$localeLanguageCode];
+        }
+
+        return $languageCode;
     }
 
     /**
@@ -112,7 +143,7 @@ class Config extends PaymentGatewayConfig
      */
     public function getInvoiceLanguageCode($storeId = null)
     {
-        return $countryCardTypes = $this->getValue(self::KEY_INVOICE_LANGUAGE_CODE, $storeId);
+        return $this->getLanguageCode($storeId);
     }
 
     /**

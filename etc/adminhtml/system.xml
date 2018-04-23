@@ -52,13 +52,6 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>A flag to disable/enable automatic invoice creation (on CC Paygate side).</comment>
                 </field>
-                <field id="invoice_language_code" type="select" translate="label" sortOrder="910" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label><![CDATA[Invoice GUI's language.]]></label>
-                    <source_model>SR\Cardcom\Model\System\Config\Source\LanguageCode</source_model>
-                    <depends>
-                        <field id="use_invoice_creation">1</field>
-                    </depends>
-                </field>
                 <!-- edit: Cardcom Invoice settings -->
 
                 <field id="debug" translate="label comment" type="select" sortOrder="1900" showInDefault="1" showInWebsite="1" showInStore="0">

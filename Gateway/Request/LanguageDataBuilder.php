@@ -5,12 +5,9 @@ namespace SR\Cardcom\Gateway\Request;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 
-class UserNameDataBuilder extends DataBuilderAbstract
+class LanguageDataBuilder extends DataBuilderAbstract
 {
-    /**
-     *
-     */
-    const USER_NAME = 'UserName';
+    const LANGUAGE = 'Language';
 
     /**
      * @inheritdoc
@@ -24,7 +21,7 @@ class UserNameDataBuilder extends DataBuilderAbstract
         $order = $paymentDO->getOrder();
 
         return [
-            self::USER_NAME => $this->config->getApiUsername($order->getStoreId()),
+            self::LANGUAGE => $this->config->getLanguageCode($order->getStoreId()),
         ];
     }
 }
