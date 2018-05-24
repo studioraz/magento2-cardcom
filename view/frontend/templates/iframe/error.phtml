@@ -7,7 +7,7 @@ $errorCode = $block->getErrorCode();
 $errorMessage = $block->getErrorMessage();
 ?>
 <script>
-parent.window.location.replace('/checkout/cart/');
+parent.window.location.replace('<?= $block->getUrl("checkout/cart") ?>');
 </script>
 <p><b>Error:</b><br>
 <strong>Code:</strong> <?= $errorCode ?><br>

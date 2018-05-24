@@ -14,7 +14,7 @@ class CreditMemoDataBuilder extends InvoiceDataAbstractBuilder
      */
     protected function canBuilderBePerformed($storeId)
     {
-        return true;
+        return $this->config->isInvoiceCreationActive($storeId);
     }
 
     /**
@@ -77,7 +77,7 @@ class CreditMemoDataBuilder extends InvoiceDataAbstractBuilder
         $amountToRefund = (float)$order->getShippingRefunded() - $amountRefundedTotal;
 
         // Total of Refunded Shipping Amount should not be greater than Invoiced Shipping Amount
-        if ($amountToRefund >= (float)$order->getShippingInvoiced()) {
+        if ($amountToRefund > (float)$order->getShippingInvoiced()) {
             $amountToRefund = 0;
         }
 

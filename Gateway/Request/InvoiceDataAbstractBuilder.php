@@ -190,6 +190,19 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
     abstract protected function createExtraItems(OrderAdapterInterface $orderAdapter);
 
     /**
+     * Creates Section with specific Head parameters for Invoices
+     *
+     * OPTIONAL: it is empty by default
+     *
+     * @param OrderAdapterInterface $orderAdapter
+     * @return array
+     */
+    protected function getInvoiceHeadSection(OrderAdapterInterface $orderAdapter)
+    {
+        return [];
+    }
+
+    /**
      * @inheritdoc
      * @throws LocalizedException
      */
@@ -210,6 +223,7 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
         }
 
         return array_replace_recursive(
+            $this->getInvoiceHeadSection($order),
             [
                 self::CUSTOMER_NAME => $billingAddress->getFirstname() . ' ' . $billingAddress->getLastname(),
                 self::SHOULD_EMAIL_BE_SENT => 'false',

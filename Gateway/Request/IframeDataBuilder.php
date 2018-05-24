@@ -3,6 +3,7 @@
 namespace SR\Cardcom\Gateway\Request;
 
 use Magento\Framework\UrlInterface;
+use Magento\Payment\Gateway\Data\AddressAdapterInterface;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use SR\Cardcom\Gateway\Config\Config;
@@ -37,10 +38,12 @@ class IframeDataBuilder extends DataBuilderAbstract
         /** @var OrderAdapterInterface $order */
         $order = $paymentDO->getOrder();
 
-        return [
-            'ProductName' => 'Order Id: ' . $this->getUniqueId($order),
-            'ReturnValue' => $this->getUniqueId($order),
+        /** @var AddressAdapterInterface $billingAddress */
+        $billingAddress = $order->getBillingAddress();
 
+        return [
+            'ProductName' => $billingAddress->getEmail(),
+            'ReturnValue' => $this->getUniqueId($order),
 
             //@todo: move into separate Request Builders
             'CodePage' => '65001',
