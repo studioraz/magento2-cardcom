@@ -7,7 +7,7 @@ $errorCode = $block->getErrorCode();
 $errorMessage = $block->getErrorMessage();
 ?>
 <script>
-parent.window.location.replace('/checkout/onepage/success/');
+parent.window.location.replace('<?= $block->getUrl("checkout/onepage/success") ?>');
 </script>
 <p><b>Order:</b><br>
 <strong>Order Id:</strong> <?= $block->getLastRealOrderId() ?><br>
