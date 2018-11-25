@@ -226,7 +226,7 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
             $this->getInvoiceHeadSection($order),
             [
                 self::CUSTOMER_NAME => $billingAddress->getFirstname() . ' ' . $billingAddress->getLastname(),
-                self::SHOULD_EMAIL_BE_SENT => 'false',
+                self::SHOULD_EMAIL_BE_SENT => 'true',
                 self::LANGUAGE_CODE => $this->config->getInvoiceLanguageCode($order->getStoreId()),
                 self::EMAIL => $billingAddress->getEmail(),
                 self::CUSTOMER_ADDRESS_LINE_ONE => $billingAddress->getStreetLine1(),
