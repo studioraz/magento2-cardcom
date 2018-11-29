@@ -7,16 +7,13 @@ $errorCode = $block->getErrorCode();
 $errorMessage = $block->getErrorMessage();
 ?>
 
-<?php /*
 <script>
 parent.window.location.replace('<?= $block->getUrl("checkout/onepage/success") ?>');
 </script>
+<?php /*
 <p><b>Order:</b><br>
 <strong>Order Id:</strong> <?= $block->getLastRealOrderId() ?><br>
 <strong>Order Status:</strong> <?= $block->getLastOrderStatus() ?><br><br>
 */ ?>
 <p>The Order has been placed successfully.</p>
-<?php /*
-<br>
-You will be redirected to Checkout Success Page.
- */ ?>
+<p>You will be redirected to Checkout Success Page.</p>
