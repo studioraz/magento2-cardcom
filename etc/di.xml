@@ -53,9 +53,11 @@
     <virtualType name="CardcomCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="initialize_iframe" xsi:type="string">CardcomInitializeIframeCommand</item>
-                <item name="fetch_transaction_information" xsi:type="string">CardcomFetchTransactionInfoCommand</item>
+                <item name="authorize" xsi:type="string">CardcomAuthorizeCommand</item>
                 <item name="capture" xsi:type="string">CardcomCaptureCommand</item>
+                <item name="fetch_transaction_information" xsi:type="string">CardcomFetchTransactionInfoCommand</item>
+                <item name="initialize_iframe" xsi:type="string">CardcomInitializeIframeCommand</item>
+                <item name="order" xsi:type="string">CardcomOrderCommand</item>
                 <item name="refund" xsi:type="string">CardcomRefundCommand</item>
             </argument>
         </arguments>
@@ -139,10 +141,22 @@
     <!-- end: Command: FETCH TRANSACTION INFO -->
 
 
+    <!-- start: Command: AUTHORIZE -->
+    <!-- currently this is just a stub but can be implemented when it is needed -->
+    <virtualType name="CardcomAuthorizeCommand" type="Magento\Payment\Gateway\Command\NullCommand"/>
+    <!-- end: Command: AUTHORIZE -->
+
+
     <!-- start: Command: CAPTURE -->
     <!-- currently this is just a stub but can be implemented when it is needed -->
     <virtualType name="CardcomCaptureCommand" type="Magento\Payment\Gateway\Command\NullCommand"/>
     <!-- end: Command: CAPTURE -->
+
+
+    <!-- start: Command: ORDER -->
+    <!-- currently this is just a stub but can be implemented when it is needed -->
+    <virtualType name="CardcomOrderCommand" type="Magento\Payment\Gateway\Command\NullCommand"/>
+    <!-- end: Command: ORDER -->
 
 
     <!-- start: Command: REFUND -->
@@ -212,6 +226,12 @@
     </virtualType>
 
     <type name="SR\Cardcom\Gateway\Http\Client\Curl">
+        <arguments>
+            <argument name="customLogger" xsi:type="object">CardcomLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="SR\Cardcom\Controller\Checkout\PaymentNotify">
         <arguments>
             <argument name="customLogger" xsi:type="object">CardcomLogger</argument>
         </arguments>

@@ -10,6 +10,7 @@ use Magento\Checkout\Model\Type\Onepage as CheckoutTypeOnepage;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Url\DecoderInterface;
 use Magento\Payment\Gateway\Command\CommandException;
@@ -17,7 +18,9 @@ use Magento\Payment\Helper\Data as PaymentData;
 use Magento\Payment\Model\MethodInterface;
 use Magento\Quote\Api\CartManagementInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Model\Quote;
+use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\ResourceModel\Order as OrderResource;
@@ -25,6 +28,8 @@ use SR\Cardcom\Gateway\Config\Config;
 use SR\Cardcom\Gateway\Response\IframeSourceUrlHandler;
 use SR\Cardcom\Model\Ui\ConfigProvider;
 
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\OrderInterfaceFactory;
 
 class Checkout
 {
@@ -59,6 +64,11 @@ class Checkout
      * @var CartManagementInterface
      */
     protected $quoteManagement;
+
+    /**
+     * @var OrderInterfaceFactory
+     */
+    protected $orderFactory;
 
     /**
      * @var OrderResource
@@ -110,10 +120,10 @@ class Checkout
      * @param CartRepositoryInterface $quoteRepository
      * @param PaymentData $paymentData
      * @param Config $config
+     * @param OrderInterfaceFactory $orderFactory
      * @param OrderResource $orderResource
      * @param OrderSender $orderSender
      * @param DecoderInterface $urlDecoder
-     * @throws \Exception
      */
     public function __construct(
         DataObjectHelper $dataObjectHelper,
@@ -124,6 +134,7 @@ class Checkout
         CartRepositoryInterface $quoteRepository,
         PaymentData $paymentData,
         Config $config,
+        OrderInterfaceFactory $orderFactory,
         OrderResource $orderResource,
         OrderSender $orderSender,
         DecoderInterface $urlDecoder
@@ -136,21 +147,24 @@ class Checkout
         $this->quoteRepository  = $quoteRepository;
         $this->paymentData      = $paymentData;
         $this->config           = $config;
+        $this->orderFactory     = $orderFactory;
         $this->orderResource    = $orderResource;
         $this->orderSender      = $orderSender;
         $this->urlDecoder       = $urlDecoder;
-
-        $this->initQuote();
     }
 
     /**
-     * @return Quote
+     * Initializes Quote
+     *
+     * @param null $quoteId
+     * @return CartInterface
+     * @throws NoSuchEntityException
      * @throws \Exception
      */
-    private function initQuote()
+    private function initQuote($quoteId = null)
     {
         if (is_null($this->quote)) {
-            $this->quote = $this->checkoutSession->getQuote();
+            $this->quote = is_null($quoteId) ? $this->checkoutSession->getQuote() : $this->quoteRepository->get($quoteId);
             if (!$this->quote->getId()) {
                 throw new \Exception('Quote instance is required.');
             }
@@ -164,15 +178,18 @@ class Checkout
      * Executes Initialize_Iframe command and return Iframe Source url
      *
      * @return array|mixed|null
+     * @throws CommandException
      * @throws LocalizedException
      * @throws NotFoundException
-     * @throws CommandException
+     * @throws \Exception
      */
     public function getIframeSourceUrl()
     {
         /** @var CardcomFacade $methodInstance */
         $methodInstance = $this->getMethodInstance();
 
+        // prepare Quote
+        $this->initQuote();
         $this->quote->collectTotals();
 
         /** @var Quote\Payment $payment */
@@ -191,12 +208,15 @@ class Checkout
     /**
      * @param string|null $transactionId
      * @return Order|null
-     * @throws LocalizedException
+     * @throws AlreadyExistsException
      * @throws CouldNotSaveException
+     * @throws LocalizedException
+     * @throws \Exception
      */
     public function placeOrder($transactionId = null)
     {
         // prepare Quote
+        $this->initQuote();
         $this->quote->setCheckoutMethod($this->getCheckoutMethod());
 
         // prepare Shipping information
@@ -236,6 +256,61 @@ class Checkout
     }
 
     /**
+     * Captures authorized amount of the Order
+     *
+     * @param int|string $quoteId
+     * @param string|null $transactionId
+     * @return Order
+     * @throws AlreadyExistsException
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
+    public function captureOrderAmount($quoteId, $transactionId = null)
+    {
+        /** @var Order $order */
+        $order = $this->prepareOrderByQuote($quoteId);
+
+        /** @var Order\Payment $payment */
+        $payment = $order->getPayment();
+
+        // command to fetch and fill transaction information into Payment Object
+        $this->getMethodInstance()->fetchTransactionInfo($payment, $transactionId);
+
+        $payment->setAmountAuthorized($order->getTotalDue());
+        $payment->setBaseAmountAuthorized($order->getBaseTotalDue());
+
+        // start transaction
+        $payment->capture(null);
+
+        $order->setState(Order::STATE_PROCESSING);
+        $order->setStatus('processing');
+
+        // commit transaction
+        $this->orderResource->save($order);
+
+        return $order;
+    }
+
+    /**
+     * Fetches Order by Quote
+     *
+     * @param int|null $quoteId
+     * @return OrderInterface
+     * @throws NoSuchEntityException
+     * @throws \Exception
+     */
+    private function prepareOrderByQuote($quoteId = null)
+    {
+        $this->initQuote($quoteId);
+
+        /** @var OrderInterface $order */
+        $order = $this->orderFactory->create();
+        $this->orderResource->load($order, $this->quote->getId(), 'quote_id');
+
+        return $order;
+    }
+
+    /**
      * Actions which should be run after Order is placed
      *
      * @param Order $order
@@ -252,6 +327,9 @@ class Checkout
             $order->addStatusHistoryComment($comment)
                 ->setIsCustomerNotified(true);
         }
+
+        $order->setState(Order::STATE_PENDING_PAYMENT);
+        $order->setStatus('pending_payment');
 
         $this->orderResource->save($order);
 
