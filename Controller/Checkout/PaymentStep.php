@@ -16,7 +16,10 @@ class PaymentStep extends CheckoutAbstract
 
         try {
             $this->initCheckout();
-            $iframeSourceUrl = $this->checkout->getIframeSourceUrl();
+
+            if ($iframeSourceUrl = $this->checkout->getIframeSourceUrl()) {
+                $this->checkout->placeOrder();
+            }
 
             $this->coreRegistry->register('cardcom_iframe_source_url', $iframeSourceUrl);
         } catch (\Exception $e) {

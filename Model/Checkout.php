@@ -234,7 +234,7 @@ class Checkout
         $payment->setMethod(ConfigProvider::CODE);
 
         // command to fetch and fill transaction information into Payment Object
-        $methodInstance->fetchTransactionInfo($payment, $transactionId);
+        //$methodInstance->fetchTransactionInfo($payment, $transactionId);
         // end: prepare Payment information
 
         //save quote

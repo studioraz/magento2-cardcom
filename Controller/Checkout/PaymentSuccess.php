@@ -17,11 +17,11 @@ class PaymentSuccess extends CheckoutAbstract
         $httpResult = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
 
         try {
-            $this->initCheckout();
-            $this->initTransactionId();
+            //$this->initCheckout();
+            //$this->initTransactionId();
 
             /** @var Order $order */
-            $order = $this->checkout->placeOrder($this->transactionId);
+            //$order = $this->checkout->placeOrder($this->transactionId);
         } catch (\Exception $e) {
             /** @var Forward $httpResult */
             $httpResult = $this->resultFactory->create(ResultFactory::TYPE_FORWARD);

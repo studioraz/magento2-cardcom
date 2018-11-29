@@ -56,6 +56,11 @@ class PaymentNotify extends CheckoutAbstract
 
         $requestParams = $this->getRequest()->getParams();
 
+        $this->customLogger->debug([
+            'callable' => static::class,
+            'request_params' => $requestParams,
+        ]);
+
         try {
             $this->initCheckout();
             $this->initTransactionId();
