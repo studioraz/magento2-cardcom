@@ -4,6 +4,7 @@ namespace SR\Cardcom\Model\Checkout;
 
 use Magento\Checkout\Api\GuestPaymentInformationManagementInterface;
 use Magento\Checkout\Api\PaymentInformationManagementInterface;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Quote\Api\Data\PaymentInterface;
 use SR\Cardcom\Model\Ui\ConfigProvider;
 
@@ -24,6 +25,7 @@ class PaymentInformationManagementPlugin
      * @param Callable $proceed
      * @param mixed ...$arguments
      * @return bool
+     * @throws CouldNotSaveException
      */
     public function aroundSavePaymentInformationAndPlaceOrder($subject, $proceed, ...$arguments)
     {

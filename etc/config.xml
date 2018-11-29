@@ -24,13 +24,15 @@
                 <can_fetch_transaction_information>1</can_fetch_transaction_information>
                 <!--<cctypes>AE,VI,MC,DI,JCB,CUP,DN,MI</cctypes>-->
 
-                <order_status>processing</order_status>
                 <!--<order_status>pending</order_status>-->
+                <order_status>pending_payment</order_status>
+                <!--<order_status>processing</order_status>-->
                 <!--<order_successful_status>processing</order_successful_status>-->
                 <!--<order_failed_status>pending</order_failed_status>-->
 
-                <payment_action>authorize_capture</payment_action>
-                <!--<payment_action>authorize</payment_action>-->
+                <!--<payment_action>order</payment_action>-->
+                <payment_action>authorize</payment_action>
+                <!--<payment_action>authorize_capture</payment_action>-->
                 <!-- end: General Settings -->
 
 
