@@ -67,8 +67,8 @@ class OrderInvoiceDataBuilder extends InvoiceDataAbstractBuilder
         $shipping = $quote->getShippingAddress();
 
         return [
-            $this->createShippingItem($shipping),
-            $this->createTaxItem($shipping),
+            $this->createShippingItem($shipping)
+            //$this->createTaxItem($shipping),
         ];
     }
 
