@@ -48,6 +48,11 @@ abstract class HandlerAbstract implements HandlerInterface
             ];
         }
 
+        // FIXME - temporary workaround to add CartNumber parameter which is expected but absent on PayPal flow.
+        if (!array_key_exists('ExtShvaParams_CardNumber5', $parsedResponse)) {
+            $parsedResponse['ExtShvaParams_CardNumber5'] = 'xxxx';
+        }
+
         return $parsedResponse;
     }
 
