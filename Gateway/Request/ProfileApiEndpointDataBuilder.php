@@ -10,7 +10,7 @@ class ProfileApiEndpointDataBuilder extends DataBuilderAbstract
     public function build(array $buildSubject)
     {
         return [
-            self::API_ENDPOINT => 'https://secure.cardcom.co.il/BillGoldLowProfile.aspx',
+            self::API_ENDPOINT => 'https://secure.cardcom.solutions/BillGoldLowProfile.aspx',
         ];
     }
 }

@@ -10,7 +10,7 @@ class ProfileIndicatorApiEndpointDataBuilder extends DataBuilderAbstract
     public function build(array $buildSubject)
     {
         return [
-            self::API_ENDPOINT => 'https://secure.cardcom.co.il/Interface/BillGoldGetLowProfileIndicator.aspx',
+            self::API_ENDPOINT => 'https://secure.cardcom.solutions/Interface/BillGoldGetLowProfileIndicator.aspx',
         ];
     }
 }

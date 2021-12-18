@@ -4,7 +4,7 @@
 <a href="http://www.magepal.com" ><img src="https://image.ibb.co/cRGMFy/logostudioraz.jpg" width="100" align="right" /></a>
 # Magento 2 - Cardcom (אישורית זהב) payment gateway module
 
-Magento 2 offical module for the Israeli payment gateway [Cardcom](https://www.cardcom.co.il/)
+Magento 2 offical module for the Israeli payment gateway [Cardcom](https://www.cardcom.solutions/)
 
 ## Installation
 

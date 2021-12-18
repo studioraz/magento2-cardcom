@@ -240,7 +240,7 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
                 self::IS_VAT_EXCLUDED => 'false',
                 self::MANUAL_NUMBER => $this->getUniqueId($order),
             ],
-            $this->getItemsSection($order)
+            $this->getItemsSection($order, $amount)
         );
     }
 
@@ -251,13 +251,13 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
      * @return array
      * @throws LocalizedException
      */
-    private function getItemsSection(OrderAdapterInterface $order)
+    private function getItemsSection(OrderAdapterInterface $order,$totalSum)
     {
         $itemsSection = [];
         $itemIndex = 1;
-
-        $items = array_merge($order->getItems(), $this->createExtraItems($order));
-
+        //$totalSum = $order->getGrandTotalAmount();
+        $items = $order->getItems();//array_merge($order->getItems(), $this->createExtraItems($order));
+        $discountTotal = 0;
         /** @var QuoteItem|OrderItem|DataObject $item */
         foreach ($items as $item) {
             if (!$this->canItemBeProcessed($item)) {
@@ -270,7 +270,57 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
                 $key = $paramPrefix . $itemIndex . '.' . $paramName;
                 $itemsSection[$key] = $this->getItemValueByParamCode($item, $parameter);
             }
+            $totalSum -= number_format($item->getPriceInclTax(), 2, '.', '') * $this->getItemQuantity($item);
+            $itemIndex++;
+            $discountTotal += $item->getDiscountAmount();
+        }
 
+        $items = $order->getItems();
+
+        /** @var QuoteItem $firstItem */
+        $firstItem = current($items);
+
+        /** @var Quote $order */
+        $quote = $firstItem->getQuote();
+
+        /** @var QuoteShippingAddress $shipping */
+        $shipping = $quote->getShippingAddress();
+
+        if($shipping->getShippingAmount() != 0){
+            $itemsSection['InvoiceLines'.$itemIndex.'.Description'] = $this->alnumFilter->filter(__('Shipping: ' . $shipping->getShippingDescription()));
+
+            // $itemsSection['InvoiceLines'.$itemIndex.'.Price'] = $shipping->getShippingAmount();
+            // Here we should use shipping include tax, otherwise the invoice sum bill won't
+            // be equal to sumToBill
+            $itemsSection['InvoiceLines'.$itemIndex.'.Price'] = $shipping->getBaseShippingInclTax();
+
+
+            $itemsSection['InvoiceLines'.$itemIndex.'.Quantity'] = 1;
+            $itemsSection['InvoiceLines'.$itemIndex.'.IsPriceIncludeVAT'] = true;
+            $itemsSection['InvoiceLines'.$itemIndex.'.ProductID'] = '000000';
+            $itemsSection['InvoiceLines'.$itemIndex.'.IsVatFree'] = false;
+            $totalSum -=$shipping->getShippingAmount();
+
+            $itemIndex++;
+        }
+
+        if($discountTotal != 0){
+            $itemsSection['InvoiceLines'.$itemIndex.'.Description'] = $quote->getCouponCode();
+            $itemsSection['InvoiceLines'.$itemIndex.'.Price'] = -1* number_format($discountTotal, 2, '.', '');
+            $itemsSection['InvoiceLines'.$itemIndex.'.Quantity'] = 1;
+            $itemsSection['InvoiceLines'.$itemIndex.'.IsPriceIncludeVAT'] = true;
+            $itemsSection['InvoiceLines'.$itemIndex.'.ProductID'] = 'discount';
+            $itemsSection['InvoiceLines'.$itemIndex.'.IsVatFree'] = false;
+            $totalSum += $discountTotal;
+            $itemIndex++;
+        }
+        if($totalSum != 0){
+            $itemsSection['InvoiceLines'.$itemIndex.'.Description'] = 'שורת איזון עבור חשבונית בלבד';
+            $itemsSection['InvoiceLines'.$itemIndex.'.Price'] = number_format($totalSum, 2, '.', '');
+            $itemsSection['InvoiceLines'.$itemIndex.'.Quantity'] = 1;
+            $itemsSection['InvoiceLines'.$itemIndex.'.IsPriceIncludeVAT'] = true;
+            $itemsSection['InvoiceLines'.$itemIndex.'.ProductID'] = 'balance';
+            $itemsSection['InvoiceLines'.$itemIndex.'.IsVatFree'] = false;
             $itemIndex++;
         }
 
@@ -292,7 +342,8 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
 
             case self::ITEM_PRICE:
                 //$value = (string) round($item->getPrice() * 100);
-                $value = number_format($item->getPrice(), 2, '.', '');
+                $value = number_format($item->getPriceInclTax(), 2, '.', '');
+
                 break;
 
             case self::ITEM_QTY:

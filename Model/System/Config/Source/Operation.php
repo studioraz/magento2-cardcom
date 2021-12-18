@@ -26,7 +26,7 @@ class Operation implements ArrayInterface
             ['value' => self::BILLING, 'label' => __('Billing (Charge Only)')],
             ['value' => self::BILLING_AND_TOKEN_CREATION, 'label' => __('Billing + Create a Token')],
 //            ['value' => self::TOKEN_CREATION_ONLY, 'label' => __('Create a Token (Only)')],
-//            ['value' => self::SUSPENDED_DEAL, 'label' => __('Suspended Deal')],
+            ['value' => self::SUSPENDED_DEAL, 'label' => __('Suspended Deal')],
         ];
     }
 
@@ -43,7 +43,7 @@ class Operation implements ArrayInterface
             self::BILLING => __('Billing (Charge Only)'),
             self::BILLING_AND_TOKEN_CREATION => __('Billing + Create a Token'),
 //            self::TOKEN_CREATION_ONLY => __('Create a Token (Only)'),
-//            self::SUSPENDED_DEAL => _('Suspended Deal'),
+           self::SUSPENDED_DEAL => _('Suspended Deal'),
         ];
     }
 }

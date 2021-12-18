@@ -26,7 +26,7 @@ class IframeSourceUrlHandler extends HandlerAbstract
     /**
      * @var string
      */
-    private $apiEndpointUrl = 'https://secure.cardcom.co.il/external/LowProfileClearing2.aspx';
+    private $apiEndpointUrl = 'https://secure.cardcom.solutions/external/LowProfileClearing2.aspx';
 
     /**
      * IframeSourceUrlHandler constructor.

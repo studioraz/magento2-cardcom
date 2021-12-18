@@ -42,7 +42,7 @@ class IframeDataBuilder extends DataBuilderAbstract
         $billingAddress = $order->getBillingAddress();
 
         return [
-            'ProductName' => $billingAddress->getEmail(),
+            'ProductName' => $this->getUniqueId($order),
             'ReturnValue' => $this->getUniqueId($order),
 
             //@todo: move into separate Request Builders

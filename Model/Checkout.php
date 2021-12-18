@@ -31,6 +31,8 @@ use SR\Cardcom\Model\Ui\ConfigProvider;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderInterfaceFactory;
 
+use SR\Cardcom\Model\System\Config\Source\Operation;
+
 class Checkout
 {
     /**
@@ -84,6 +86,7 @@ class Checkout
      * @var CartRepositoryInterface
      */
     protected $quoteRepository;
+
 
     /**
      * @var PaymentData
@@ -259,13 +262,14 @@ class Checkout
      * Captures authorized amount of the Order
      *
      * @param int|string $quoteId
+     * @param int $operation
      * @param string|null $transactionId
      * @return Order
      * @throws AlreadyExistsException
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function captureOrderAmount($quoteId, $transactionId = null)
+    public function captureOrderAmount($quoteId, $operation, $transactionId = null)
     {
         /** @var Order $order */
         $order = $this->prepareOrderByQuote($quoteId);
@@ -281,9 +285,22 @@ class Checkout
 
         // start transaction
         $payment->capture(null);
-
-        $order->setState(Order::STATE_PROCESSING);
-        $order->setStatus('processing');
+//        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log');
+//        $logger = new \Zend\Log\Logger();
+//        $logger->addWriter($writer);
+//        $logger->info($operation);
+//        $logger->info('here');
+        if (Operation::SUSPENDED_DEAL != $operation) {
+            $order->setState(Order::STATE_PROCESSING);
+            $order->setStatus('processing');
+        } else {
+            $order->setState(Order::STATE_NEW);
+            $order->setStatus('pending');
+        }
+        $order->setCanSendNewEmailFlag(true);
+        $order->save();
+        $this->checkoutSession->setForceOrderMailSentOnSuccess(true);
+        $this->orderSender->send($order, true);
 
         // commit transaction
         $this->orderResource->save($order);
@@ -320,13 +337,14 @@ class Checkout
     private function placeOrderAfter(Order $order)
     {
         // Notify customer about this order
-        if (!$order->getEmailSent()) {
-            $comment = 'Notified customer about order\'s payment';
-
-            $this->orderSender->send($order);
-            $order->addStatusHistoryComment($comment)
-                ->setIsCustomerNotified(true);
-        }
+        // We don't want it anymore
+//        if (!$order->getEmailSent()) {
+//            $comment = 'Notified customer about order\'s payment';
+//
+//            $this->orderSender->send($order);
+//            $order->addStatusHistoryComment($comment)
+//                ->setIsCustomerNotified(true);
+//        }
 
         $order->setState(Order::STATE_PENDING_PAYMENT);
         $order->setStatus('pending_payment');

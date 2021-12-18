@@ -61,12 +61,13 @@ class PaymentNotify extends CheckoutAbstract
             'request_params' => $requestParams,
         ]);
 
+
         try {
             $this->initCheckout();
             $this->initTransactionId();
 
             list($quoteId, $randNum) = explode('-', $requestParams['oid'] . '--');
-            $this->checkout->captureOrderAmount($quoteId, $this->transactionId);
+            $this->checkout->captureOrderAmount($quoteId, $requestParams['Operation'], $this->transactionId);
         } catch (\Exception $e) {
             $this->customLogger->debug([
                 'exception_point' => static::class,

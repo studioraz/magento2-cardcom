@@ -4,4 +4,7 @@
     <event name="sales_order_payment_capture">
         <observer name="cardcom_sales_order_payment_capture" instance="SR\Cardcom\Observer\Sales\Order\CaptureObserver" />
     </event>
+    <event name="sales_order_place_after">
+        <observer name="SR_Cardcom_event_email_stopper" instance="SR\Cardcom\Event\EmailStopper\Order\Email" />
+    </event>
 </config>
