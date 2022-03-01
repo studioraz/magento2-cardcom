@@ -54,8 +54,8 @@
                 <currency>USD</currency>
                 <language_code>en</language_code>
 
-                <privateInfoKeys>auth_number,card_id,status_code,status_text,error_code,error_text</privateInfoKeys>
-                <paymentInfoKeys>cc_mask_last_4,cc_owner_id,cc_owner_name,cc_type,cc_exp_date,last_trans_id</paymentInfoKeys>
+                <privateInfoKeys>cc_owner_id,cc_owner_name,cc_type,cc_exp_date,last_trans_id,auth_number,card_id,status_code,status_text,error_code,error_text</privateInfoKeys>
+                <paymentInfoKeys>cc_mask_last_4,cc_owner_id,cc_owner_name,cc_type,cc_exp_date,last_trans_id,auth_number</paymentInfoKeys>
             </cardcom>
         </payment>
     </default>
