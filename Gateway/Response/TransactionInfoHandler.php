@@ -33,5 +33,11 @@ class TransactionInfoHandler extends HandlerAbstract
 
         $payment->setAdditionalInformation('cc_owner_id', $payment->getCcOwner());
         $payment->setAdditionalInformation('cc_exp_date', $payment->getCcExpMonth() . ' / ' . substr($payment->getCcExpYear(), -2));
+
+        if (isset($handledResult['InternalDealNumber'])) {
+            $payment->setAdditionalInformation('internal_deal_number', $handledResult['InternalDealNumber']);
+        } elseif (isset($handledResult['ExtShvaParams.InternalDealNumber'])) {
+            $payment->setAdditionalInformation('internal_deal_number', $handledResult['ExtShvaParams.InternalDealNumber']);
+        }
     }
 }

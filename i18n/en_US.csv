@@ -36,3 +36,4 @@ Operation,Operation
 Debug,Debug
 "Write debug data into log file. /var/log/cardcom.log","Write debug data into log file. /var/log/cardcom.log"
 "Sort Order","Sort Order"
+"internal_deal_number","Internal Deal Number"
