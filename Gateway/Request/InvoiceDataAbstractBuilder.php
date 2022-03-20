@@ -225,7 +225,7 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
         return array_replace_recursive(
             $this->getInvoiceHeadSection($order),
             [
-                self::CUSTOMER_NAME => $billingAddress->getFirstname() . ' ' . $billingAddress->getLastname(),
+                self::CUSTOMER_NAME => $this->getInvoiceCustomerName($order),
                 self::SHOULD_EMAIL_BE_SENT => 'true',
                 self::LANGUAGE_CODE => $this->config->getInvoiceLanguageCode($order->getStoreId()),
                 self::EMAIL => $billingAddress->getEmail(),
@@ -234,7 +234,7 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
                 self::CUSTOMER_CITY => $billingAddress->getCity(),
                 self::CUSTOMER_PHONE_NUMBER => '',
                 self::CUSTOMER_MOBILE_NUMBER => $billingAddress->getTelephone(),
-                self::CUSTOMER_COMPANY_ID => (string) $billingAddress->getCompany(),
+                self::CUSTOMER_COMPANY_ID => '',
                 self::COMMENTS => '',
                 self::CURRENCY_CODE => $this->getCoinID($order),//"1" - NIS, "2" - USD
                 self::IS_VAT_EXCLUDED => 'false',
@@ -287,7 +287,9 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
         $shipping = $quote->getShippingAddress();
 
         if($shipping->getShippingAmount() != 0){
-            $itemsSection['InvoiceLines'.$itemIndex.'.Description'] = $this->alnumFilter->filter(__('Shipping: ' . $shipping->getShippingDescription()));
+
+
+            $itemsSection['InvoiceLines'.$itemIndex.'.Description'] = $this->getInvoiceShippingDescription($order);
 
             // $itemsSection['InvoiceLines'.$itemIndex.'.Price'] = $shipping->getShippingAmount();
             // Here we should use shipping include tax, otherwise the invoice sum bill won't
@@ -390,4 +392,33 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
     {
         return (bool)(float)$item->getPrice();
     }
+
+    /**
+     * get invoice customer name
+     * @param OrderAdapterInterface $order
+     * @return string
+     */
+    protected function getInvoiceCustomerName($order)
+    {
+        /** @var AddressAdapterInterface $billingAddress */
+        $billingAddress = $order->getBillingAddress();
+
+        $invoiceCustomerName = $billingAddress->getCompany() ?? $billingAddress->getFirstname() . ' ' . $billingAddress->getLastname();
+
+        return $this->alnumFilter->filter($invoiceCustomerName);
+    }
+
+    /**
+     * get invoice shipping description
+     * @param OrderAdapterInterface $order
+     * @return string
+     */
+    protected function getInvoiceShippingDescription($order) {
+
+        $shippingDescription = $this->config->getInvoiceShippingDescription($order->getStoreId()) ??
+            $order->getShippingAddress()->getShippingDescription();
+
+        return $this->alnumFilter->filter($shippingDescription);
+    }
+
 }

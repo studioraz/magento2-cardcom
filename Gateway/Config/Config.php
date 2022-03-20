@@ -22,6 +22,7 @@ class Config extends PaymentGatewayConfig
     const KEY_TERMINAL_NUMBER = 'terminal_number';
     const KEY_TERMINAL_NUMBER_TOKENIZATION = 'terminal_number_tokenization';
     const KEY_USE_INVOICE_CREATION = 'use_invoice_creation';
+    const KEY_USE_INVOICE_SHIPPING_DESCRIPTION = 'invoice_shipping_description';
     const KEY_INVOICE_LANGUAGE_CODE = 'invoice_language_code';
 
     /**
@@ -144,6 +145,15 @@ class Config extends PaymentGatewayConfig
     public function getInvoiceLanguageCode($storeId = null)
     {
         return $this->getLanguageCode($storeId);
+    }
+
+    /**
+     * Get custom shipping description for invoice shipping line
+     * @param int|null $storeId
+     * @return mixed
+     */
+    public function getInvoiceShippingDescription($storeId = null) {
+        return $this->getValue(self::KEY_USE_INVOICE_SHIPPING_DESCRIPTION, $storeId);
     }
 
     /**

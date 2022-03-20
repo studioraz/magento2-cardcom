@@ -52,6 +52,14 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>A flag to disable/enable automatic invoice creation (on CC Paygate side).</comment>
                 </field>
+
+                <field id="invoice_shipping_description" translate="label comment" type="text" sortOrder="1000" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Invoice Shipping Description</label>
+                    <comment>Custom shipping description for invoice shipping line. Leave blank to use shipping method description</comment>
+                    <depends>
+                        <field id="use_invoice_creation">1</field>
+                    </depends>
+                </field>
                 <!-- edit: Cardcom Invoice settings -->
 
                 <field id="debug" translate="label comment" type="select" sortOrder="1900" showInDefault="1" showInWebsite="1" showInStore="0">
