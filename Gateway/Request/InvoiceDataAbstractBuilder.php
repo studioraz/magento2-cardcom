@@ -10,6 +10,7 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Magento\Sales\Model\Order\Item as OrderItem;
 use SR\Cardcom\Gateway\Config\Config;
+use Magento\Quote\Model\Quote;
 
 abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
 {
@@ -289,7 +290,7 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
         if($shipping->getShippingAmount() != 0){
 
 
-            $itemsSection['InvoiceLines'.$itemIndex.'.Description'] = $this->getInvoiceShippingDescription($order);
+            $itemsSection['InvoiceLines'.$itemIndex.'.Description'] = $this->getInvoiceShippingDescription($quote);
 
             // $itemsSection['InvoiceLines'.$itemIndex.'.Price'] = $shipping->getShippingAmount();
             // Here we should use shipping include tax, otherwise the invoice sum bill won't
@@ -410,13 +411,13 @@ abstract class InvoiceDataAbstractBuilder extends DataBuilderAbstract
 
     /**
      * get invoice shipping description
-     * @param OrderAdapterInterface $order
+     * @param Quote $quote
      * @return string
      */
-    protected function getInvoiceShippingDescription($order) {
+    protected function getInvoiceShippingDescription($quote) {
 
-        $shippingDescription = $this->config->getInvoiceShippingDescription($order->getStoreId()) ??
-            $order->getShippingAddress()->getShippingDescription();
+        $shippingDescription = $this->config->getInvoiceShippingDescription($quote->getStoreId()) ??
+            $quote->getShippingAddress()->getShippingDescription();
 
         return $this->alnumFilter->filter($shippingDescription);
     }
