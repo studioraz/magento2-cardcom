@@ -44,6 +44,11 @@
                         <field id="operation" separator="|">2|3</field>
                     </depends>
                 </field>
+
+                <field id="redirect_type" translate="label comment" type="select" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Redirect Type</label>
+                    <source_model>SR\Cardcom\Model\System\Config\Source\RedirectType</source_model>
+                </field>
                 <!-- end: Cardcom specific settings -->
 
                 <!-- start: Cardcom Invoice settings -->

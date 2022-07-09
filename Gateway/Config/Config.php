@@ -24,6 +24,7 @@ class Config extends PaymentGatewayConfig
     const KEY_USE_INVOICE_CREATION = 'use_invoice_creation';
     const KEY_USE_INVOICE_SHIPPING_DESCRIPTION = 'invoice_shipping_description';
     const KEY_INVOICE_LANGUAGE_CODE = 'invoice_language_code';
+    const KEY_REDIRECT_TYPE = 'redirect_type';
 
     /**
      * @var ScopeConfigInterface
@@ -55,6 +56,16 @@ class Config extends PaymentGatewayConfig
     public function getOperationId($storeId = null)
     {
         return $this->getValue(self::KEY_OPERATION, $storeId);
+    }
+
+    /**
+     * Returns redirect type
+     * @param $storeId
+     * @return mixed|null
+     */
+    public function getRedirectType($storeId = null)
+    {
+        return $this->getValue(self::KEY_REDIRECT_TYPE, $storeId);
     }
 
     /**

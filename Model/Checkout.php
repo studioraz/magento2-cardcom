@@ -209,6 +209,17 @@ class Checkout
     }
 
     /**
+     * @return mixed|null
+     * @throws NoSuchEntityException
+     */
+    public function getRedirectType() {
+
+        $this->initQuote();
+
+        return $this->config->getRedirectType($this->quote->getStoreId());
+    }
+
+    /**
      * @param string|null $transactionId
      * @return Order|null
      * @throws AlreadyExistsException
